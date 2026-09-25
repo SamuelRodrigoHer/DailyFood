@@ -16,7 +16,6 @@ import {
   User as UserIcon,
   Loader2
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 // Mapeo amigable de errores comunes en español
 function translateAuthError(error: string): string {
@@ -88,8 +87,9 @@ export default function LoginPage() {
           router.push('/');
         }
       }
-    } catch (err: any) {
-      setErrorMsg(translateAuthError(err?.message || 'Ocurrió un error al procesar tu solicitud'));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Ocurrió un error al procesar tu solicitud';
+      setErrorMsg(translateAuthError(message));
     } finally {
       setIsSubmitting(false);
     }

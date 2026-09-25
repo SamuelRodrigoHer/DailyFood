@@ -10,6 +10,7 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 interface UserSession {
   id: string;
   email: string;
+  household_id?: string;
 }
 
 interface AppContextType {
@@ -25,6 +26,8 @@ interface AppContextType {
   login: (email: string, pass: string) => Promise<{ error?: string }>;
   signUp: (email: string, pass: string) => Promise<{ error?: string; message?: string }>;
   logout: () => Promise<void>;
+  createHouseholdInvite: () => Promise<{ code?: string; error?: string }>;
+  joinHousehold: (code: string) => Promise<{ error?: string }>;
   
   // Acciones de recetas
   addRecipe: (recipe: Omit<Recipe, 'id'>) => Promise<void>;
@@ -63,6 +66,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // 1. Cargar estado inicial y suscribir a WebSockets (Realtime)
   useEffect(() => {
     let realtimeChannel: RealtimeChannel | null = null;
+    let unsubscribeAuth: (() => void) | null = null;
+    let disposed = false;
 
     async function init() {
       setIsLoading(true);
@@ -72,9 +77,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
         // Comprobar sesión de usuario activa
         const { data: { session } } = await supabase.auth.getSession();
+        if (disposed) return;
         if (session?.user) {
-          setUser({ id: session.user.id, email: session.user.email || '' });
-          await loadSharedSupabaseData();
+          const { data: householdId } = await supabase.rpc('my_household_id');
+          setUser({ id: session.user.id, email: session.user.email || '', household_id: householdId || undefined });
+          if (householdId) await loadSharedSupabaseData(householdId);
+          else loadLocalData();
         } else {
           loadLocalData();
         }
@@ -82,13 +90,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         // Suscripción a cambios de sesión de autenticación
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
           if (session?.user) {
-            setUser({ id: session.user.id, email: session.user.email || '' });
-            await loadSharedSupabaseData();
+            const { data: householdId } = await supabase.rpc('my_household_id');
+            if (disposed) return;
+            setUser({ id: session.user.id, email: session.user.email || '', household_id: householdId || undefined });
+            if (householdId) await loadSharedSupabaseData(householdId);
+            else loadLocalData();
           } else {
             setUser(null);
             loadLocalData();
           }
         });
+        unsubscribeAuth = () => subscription.unsubscribe();
 
         // ==============================================================
         // CONFIGURACIÓN DE WEBSOCKETS EN TIEMPO REAL (SUPABASE REALTIME)
@@ -170,24 +182,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             }
           });
 
-        setIsLoading(false);
-
-        return () => {
-          subscription.unsubscribe();
-          if (realtimeChannel) supabase.removeChannel(realtimeChannel);
-        };
+        if (!disposed) setIsLoading(false);
       } else {
+        if (disposed) return;
         setIsSupabaseConnected(false);
         loadLocalData();
         setIsLoading(false);
       }
     }
 
-    init();
-  }, []);
+    void init();
+    return () => {
+      disposed = true;
+      unsubscribeAuth?.();
+      if (supabase && realtimeChannel) void supabase.removeChannel(realtimeChannel);
+    };
+    // Auth listener owns this one-time initialization; including its render-local
+    // helper would recreate subscriptions on each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supabase]);
 
   // Cargar datos locales desde localStorage
-  const loadLocalData = () => {
+  function loadLocalData() {
     if (typeof window === 'undefined') return;
 
     const storedRecipes = localStorage.getItem('app_recipes');
@@ -221,45 +237,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setShoppingItems(INITIAL_SHOPPING_ITEMS);
       localStorage.setItem('app_shopping', JSON.stringify(INITIAL_SHOPPING_ITEMS));
     }
-  };
+  }
 
-  // Cargar datos COMPARTIDOS desde Supabase (accesibles por todos los miembros autenticados)
-  const loadSharedSupabaseData = async () => {
-    if (!supabase) return;
+  // Cargar únicamente los datos del hogar al que pertenece esta cuenta.
+  async function loadSharedSupabaseData(householdId: string) {
+    if (!supabase || !householdId) return;
 
     try {
       const [recipesRes, mealsRes, shoppingRes] = await Promise.all([
-        supabase.from('recipes').select('*').order('created_at', { ascending: false }),
-        supabase.from('meal_plans').select('*').order('date', { ascending: true }),
-        supabase.from('shopping_items').select('*').order('created_at', { ascending: false }),
+        supabase.from('recipes').select('*').eq('household_id', householdId).order('created_at', { ascending: false }),
+        supabase.from('meal_plans').select('*').eq('household_id', householdId).order('date', { ascending: true }),
+        supabase.from('shopping_items').select('*').eq('household_id', householdId).order('created_at', { ascending: false }),
       ]);
 
-      if (recipesRes.data && recipesRes.data.length > 0) {
-        setRecipes(recipesRes.data);
-      } else {
-        // Inicializar con recetas por defecto si la base de datos está vacía
-        for (const r of INITIAL_RECIPES) {
-          await supabase.from('recipes').upsert({
-            id: r.id,
-            name: r.name,
-            category: r.category,
-            ingredients: r.ingredients,
-            notes: r.notes,
-          });
-        }
-        setRecipes(INITIAL_RECIPES);
-      }
+      if (recipesRes.error) throw recipesRes.error;
+      if (mealsRes.error) throw mealsRes.error;
+      if (shoppingRes.error) throw shoppingRes.error;
 
+      setRecipes(recipesRes.data || []);
       if (mealsRes.data) setMealPlans(mealsRes.data);
       if (shoppingRes.data) setShoppingItems(shoppingRes.data);
     } catch (err) {
       console.error('Error cargando datos compartidos de Supabase:', err);
       loadLocalData();
     }
-  };
+  }
 
   // Guardar en localStorage cuando se esté en modo offline/local
-  const saveLocal = (key: string, data: any) => {
+  const saveLocal = <T,>(key: string, data: T) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(key, JSON.stringify(data));
     }
@@ -277,8 +282,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
     if (error) return { error: error.message };
     if (data.user) {
-      setUser({ id: data.user.id, email: data.user.email || '' });
-      await loadSharedSupabaseData();
+      const { data: householdId, error: householdError } = await supabase.rpc('my_household_id');
+      if (householdError || !householdId) return { error: householdError?.message || 'No se encontró tu hogar.' };
+      setUser({ id: data.user.id, email: data.user.email || '', household_id: householdId });
+      await loadSharedSupabaseData(householdId);
     }
     return {};
   };
@@ -291,9 +298,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     const { data, error } = await supabase.auth.signUp({ email, password: pass });
     if (error) return { error: error.message };
-    if (data.user) {
-      setUser({ id: data.user.id, email: data.user.email || '' });
-      await loadSharedSupabaseData();
+    if (data.user && data.session) {
+      const { data: householdId, error: householdError } = await supabase.rpc('my_household_id');
+      if (householdError || !householdId) return { error: householdError?.message || 'No se pudo crear tu hogar.' };
+      setUser({ id: data.user.id, email: data.user.email || '', household_id: householdId });
+      await loadSharedSupabaseData(householdId);
     }
     return { message: 'Cuenta creada correctamente.' };
   };
@@ -305,6 +314,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   };
 
+  const createHouseholdInvite = async () => {
+    if (!supabase || !user?.household_id) return { error: 'Inicia sesión para invitar a alguien.' };
+    const { data, error } = await supabase.rpc('create_household_invite');
+    if (error) return { error: error.message };
+    const invite = Array.isArray(data) ? data[0] : data;
+    return invite?.invite_code
+      ? { code: String(invite.invite_code) }
+      : { error: 'No se pudo generar el código.' };
+  };
+
+  const joinHousehold = async (code: string) => {
+    if (!supabase || !user) return { error: 'Inicia sesión para unirte a un hogar.' };
+    const { data, error } = await supabase.rpc('join_household', { invite_code: code.trim() });
+    if (error) return { error: error.message };
+    const householdId = typeof data === 'string' ? data : String(data);
+    setUser((current) => current ? { ...current, household_id: householdId } : current);
+    await loadSharedSupabaseData(householdId);
+    return {};
+  };
+
   // -------------------------------------------------------------
   // GESTIÓN DE RECETAS (COMPARTIDAS EN TIEMPO REAL)
   // -------------------------------------------------------------
@@ -313,6 +342,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ...recipeData,
       id: crypto.randomUUID(),
       user_id: user?.id,
+      household_id: user?.household_id,
       created_at: new Date().toISOString(),
     };
 
@@ -366,6 +396,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const mealItem: MealPlanItem = {
       id: existing ? existing.id : crypto.randomUUID(),
       user_id: user?.id,
+      household_id: user?.household_id,
       date,
       meal_type: mealType,
       title,
@@ -425,6 +456,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         newItems.push({
           id: crypto.randomUUID(),
           user_id: user?.id,
+          household_id: user?.household_id,
           date: toDate,
           meal_type: meal.meal_type,
           title: meal.title,
@@ -468,6 +500,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         newItems.push({
           id: crypto.randomUUID(),
           user_id: user?.id,
+          household_id: user?.household_id,
           date,
           meal_type: 'almuerzo',
           title: randomRecipe.name,
@@ -483,6 +516,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         newItems.push({
           id: crypto.randomUUID(),
           user_id: user?.id,
+          household_id: user?.household_id,
           date,
           meal_type: 'cena',
           title: randomRecipe.name,
@@ -516,6 +550,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newItem: ShoppingItem = {
       id: crypto.randomUUID(),
       user_id: user?.id,
+      household_id: user?.household_id,
       name: name.trim(),
       category: detectedCategory,
       quantity: quantity?.trim() || undefined,
@@ -586,6 +621,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newItems: ShoppingItem[] = ingredients.map((ing) => ({
       id: crypto.randomUUID(),
       user_id: user?.id,
+      household_id: user?.household_id,
       name: ing.name.trim(),
       quantity: ing.quantity,
       category: ing.category || guessShoppingCategory(ing.name),
@@ -619,6 +655,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         login,
         signUp,
         logout,
+        createHouseholdInvite,
+        joinHousehold,
         addRecipe,
         updateRecipe,
         deleteRecipe,

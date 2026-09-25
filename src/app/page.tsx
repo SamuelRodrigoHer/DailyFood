@@ -7,18 +7,14 @@ import {
   CalendarDays, 
   ShoppingCart, 
   ChefHat, 
-  ArrowRight, 
   CheckCircle2, 
   Circle, 
   Plus, 
   Sparkles,
   Utensils,
-  Moon,
   ChevronRight,
-  ExternalLink
 } from 'lucide-react';
 import { formatDateSpanish, cn } from '@/lib/utils';
-import { SHOPPING_CATEGORIES } from '@/lib/constants';
 
 export default function HomePage() {
   const { user, mealPlans, shoppingItems, toggleShoppingItem, addShoppingItem, recipes } = useApp();
@@ -305,7 +301,7 @@ export default function HomePage() {
                 href="/lista?modo=super"
                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-sm shadow-emerald-600/30 hover:bg-emerald-700 transition"
               >
-                <span>🛒 Abrir Modo "En el Súper"</span>
+                <span>🛒 Abrir Modo &ldquo;En el Súper&rdquo;</span>
               </Link>
             </div>
 

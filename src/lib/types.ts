@@ -21,6 +21,7 @@ export interface Ingredient {
 export interface Recipe {
   id: string;
   user_id?: string;
+  household_id?: string;
   name: string;
   category: MealType;
   ingredients: Ingredient[];
@@ -31,6 +32,7 @@ export interface Recipe {
 export interface MealPlanItem {
   id: string;
   user_id?: string;
+  household_id?: string;
   date: string; // Formato YYYY-MM-DD
   meal_type: MealType;
   title: string;
@@ -41,6 +43,7 @@ export interface MealPlanItem {
 export interface ShoppingItem {
   id: string;
   user_id?: string;
+  household_id?: string;
   name: string;
   category: ShoppingCategory;
   quantity?: string;

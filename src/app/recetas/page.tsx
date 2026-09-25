@@ -10,14 +10,9 @@ import {
   ChefHat, 
   ShoppingCart, 
   Search, 
-  X, 
-  Check, 
-  Utensils, 
-  Moon, 
-  Coffee 
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SHOPPING_CATEGORIES } from '@/lib/constants';
 
 export default function RecetasPage() {
   const { recipes, addRecipe, updateRecipe, deleteRecipe, addIngredientsToShopping } = useApp();

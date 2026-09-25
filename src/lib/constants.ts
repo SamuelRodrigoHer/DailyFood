@@ -1,4 +1,4 @@
-import { ShoppingCategory, Recipe, MealPlanItem, ShoppingItem } from './types';
+import { ShoppingCategory, Recipe, ShoppingItem } from './types';
 
 export const SHOPPING_CATEGORIES: { name: ShoppingCategory; color: string; bg: string; border: string; icon: string }[] = [
   { name: 'Frutas y Verduras', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', icon: 'Apple' },

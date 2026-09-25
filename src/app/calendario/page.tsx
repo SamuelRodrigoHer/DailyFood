@@ -2,15 +2,14 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { getWeekDates, formatDateSpanish, cn } from '@/lib/utils';
-import { MealType, Recipe } from '@/lib/types';
+import { getWeekDates, cn } from '@/lib/utils';
+import { MealType, ShoppingCategory } from '@/lib/types';
 import { 
   ChevronLeft, 
   ChevronRight, 
   Plus, 
   Trash2, 
   ShoppingCart, 
-  Sparkles, 
   Utensils, 
   Moon, 
   Coffee, 
@@ -20,7 +19,6 @@ import {
   ChefHat,
   Dices,
   Copy,
-  CalendarCheck2,
   AlertTriangle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -105,7 +103,7 @@ export default function CalendarioPage() {
   const weekMealPlans = mealPlans.filter((m) => currentWeekDateStrings.includes(m.date));
   
   // Recopilar ingredientes de las recetas planificadas
-  const plannedIngredientsList: { key: string; name: string; quantity?: string; category?: any; recipeName: string }[] = [];
+  const plannedIngredientsList: { key: string; name: string; quantity?: string; category?: ShoppingCategory; recipeName: string }[] = [];
   weekMealPlans.forEach((meal) => {
     if (meal.recipe_id) {
       const rec = recipes.find((r) => r.id === meal.recipe_id);
@@ -407,7 +405,7 @@ export default function CalendarioPage() {
                       </p>
                       {lunch.notes && (
                         <p className="mt-0.5 text-[10px] text-neutral-400 line-clamp-1 italic">
-                          "{lunch.notes}"
+                          &ldquo;{lunch.notes}&rdquo;
                         </p>
                       )}
                       {lunch.recipe_id && (
@@ -489,7 +487,7 @@ export default function CalendarioPage() {
                       </p>
                       {dinner.notes && (
                         <p className="mt-0.5 text-[10px] text-neutral-400 line-clamp-1 italic">
-                          "{dinner.notes}"
+                          &ldquo;{dinner.notes}&rdquo;
                         </p>
                       )}
                       {dinner.recipe_id && (

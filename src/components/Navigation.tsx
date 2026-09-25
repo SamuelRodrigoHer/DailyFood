@@ -13,7 +13,8 @@ import {
   LogOut, 
   Sparkles,
   Cloud,
-  HardDrive
+  HardDrive,
+  Home,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -34,6 +35,7 @@ export function Navigation() {
       badge: pendingCount > 0 ? pendingCount : null 
     },
     { href: '/recetas', label: 'Mis Platos', icon: ChefHat },
+    ...(user ? [{ href: '/hogar', label: 'Mi hogar', icon: Home }] : []),
   ];
 
   return (

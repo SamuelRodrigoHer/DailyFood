@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { ShoppingCategory } from '@/lib/types';
@@ -204,7 +204,8 @@ function ListaContent() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // ------ Modo Súper ------
-  const [isSuperMode, setIsSuperMode] = useState(false);
+  const [superModeOverride, setSuperModeOverride] = useState<boolean | null>(null);
+  const isSuperMode = superModeOverride ?? searchParams.get('modo') === 'super';
 
   // ------ Agrupación por categorías ------
   const [groupByCategory, setGroupByCategory] = useState(true);
@@ -220,10 +221,6 @@ function ListaContent() {
 
   // ------ Modal confirmación vaciar ------
   const [confirmClear, setConfirmClear] = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get('modo') === 'super') setIsSuperMode(true);
-  }, [searchParams]);
 
   // ------ Cálculos ------
   const totalCount = shoppingItems.length;
@@ -336,7 +333,7 @@ function ListaContent() {
             </p>
           </div>
           <button
-            onClick={() => setIsSuperMode(false)}
+            onClick={() => setSuperModeOverride(false)}
             className="flex items-center gap-1.5 rounded-2xl border border-neutral-200 px-3 py-1.5 text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
           >
             <X className="h-3.5 w-3.5" /> Salir
@@ -363,7 +360,7 @@ function ListaContent() {
               <p className="text-lg font-bold text-neutral-800">¡Cesta completada!</p>
               <p className="mt-1 text-sm text-neutral-500">Has comprado todo lo que necesitabas 🎉</p>
               <button
-                onClick={() => setIsSuperMode(false)}
+                onClick={() => setSuperModeOverride(false)}
                 className="mt-6 rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-bold text-white"
               >
                 Volver a la lista
@@ -461,7 +458,7 @@ function ListaContent() {
 
         {/* Botón Modo Súper */}
         <button
-          onClick={() => setIsSuperMode(true)}
+          onClick={() => setSuperModeOverride(true)}
           className="flex shrink-0 items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/30 hover:bg-emerald-700 transition"
         >
           <Store className="h-4 w-4" />

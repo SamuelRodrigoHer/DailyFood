@@ -15,17 +15,13 @@ export const metadata: Metadata = {
   title: 'Sabor & Cesta - Menú Semanal y Lista de la Compra',
   description: 'Planifica tus comidas de la semana y genera tu lista de la compra al instante con una interfaz limpia y elegante.',
   manifest: '/manifest.json',
-  icons: {
-    icon: '/favicon.ico',
-  },
+  icons: { icon: '/icon.svg', apple: '/apple-touch-icon.png' },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ffffff',
+  themeColor: '#10b981',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
