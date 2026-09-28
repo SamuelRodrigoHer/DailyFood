@@ -11,10 +11,11 @@ import {
   LayoutDashboard, 
   User, 
   LogOut, 
-  Sparkles,
   Cloud,
   HardDrive,
   Home,
+  Activity,
+  type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -25,8 +26,8 @@ export function Navigation() {
   // Elementos pendientes por comprar
   const pendingCount = shoppingItems.filter((i) => !i.is_bought).length;
 
-  const navItems = [
-    { href: '/', label: 'Hoy', icon: LayoutDashboard },
+  const mealNavItems = [
+    { href: '/hoy', label: 'Hoy', icon: LayoutDashboard },
     { href: '/calendario', label: 'Menú Semanal', icon: CalendarDays },
     { 
       href: '/lista', 
@@ -38,6 +39,16 @@ export function Navigation() {
     ...(user ? [{ href: '/hogar', label: 'Mi hogar', icon: Home }] : []),
   ];
 
+  const navItems: { href: string; label: string; icon: LucideIcon; badge?: number | null }[] =
+    pathname === '/gimnasio'
+      ? [
+          { href: '/', label: 'Aplicaciones', icon: Home },
+          { href: '/gimnasio', label: 'Gimnasio', icon: Activity },
+        ]
+      : mealNavItems;
+
+  if (pathname === '/') return null;
+
   return (
     <>
       {/* 1. CABECERA SUPERIOR (Desktop y Tablet) */}
@@ -46,15 +57,15 @@ export function Navigation() {
           
           {/* Logo y Nombre */}
           <Link href="/" className="flex items-center gap-2.5 transition-transform hover:scale-[1.02]">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
-              <Sparkles className="h-5 w-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-md shadow-sky-500/20">
+              <LayoutDashboard className="h-5 w-5" />
             </div>
             <div>
               <span className="text-lg font-bold tracking-tight text-neutral-900">
-                Sabor<span className="text-emerald-600">&</span>Cesta
+                Mi<span className="text-sky-600">Modo</span>
               </span>
               <p className="hidden text-[11px] font-medium text-neutral-400 sm:block">
-                Comidas & Lista de Compra
+                Tu espacio personal
               </p>
             </div>
           </Link>
@@ -148,7 +159,9 @@ export function Navigation() {
                     <span className="max-w-[130px] truncate text-xs font-semibold text-neutral-800">
                       {user.email.split('@')[0]}
                     </span>
-                    <span className="text-[10px] text-neutral-400">Conectado</span>
+                    <span className="text-[10px] text-neutral-400">
+                      {isSupabaseConnected ? 'Conectado' : 'Sesión demo'}
+                    </span>
                   </div>
                 </div>
                 <button

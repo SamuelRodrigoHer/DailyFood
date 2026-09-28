@@ -57,3 +57,56 @@ export interface UserProfile {
   email: string;
   created_at?: string;
 }
+
+export interface GymExercise {
+  id: string;
+  name: string;
+  sets: number;
+  reps: number;
+  weight_kg?: number;
+  set_details?: GymSet[];
+  notes?: string;
+}
+
+export interface GymSet {
+  id: string;
+  reps: number;
+  weight_kg?: number;
+  completed?: boolean;
+}
+
+export interface GymLibraryExercise {
+  id: string;
+  user_id?: string;
+  name: string;
+  muscle_group?: string;
+  equipment?: string;
+  default_sets: number;
+  default_reps: number;
+  default_weight_kg?: number;
+  notes?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface GymRoutine {
+  id: string;
+  user_id?: string;
+  name: string;
+  notes?: string;
+  exercises: GymExercise[];
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface GymSession {
+  id: string;
+  user_id?: string;
+  routine_id?: string;
+  name: string;
+  performed_on: string;
+  duration_minutes?: number;
+  notes?: string;
+  exercises: GymExercise[];
+  created_at: string;
+}

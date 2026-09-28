@@ -12,14 +12,14 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Sabor & Cesta - Menú Semanal y Lista de la Compra',
-  description: 'Planifica tus comidas de la semana y genera tu lista de la compra al instante con una interfaz limpia y elegante.',
+  title: 'MiModo | Tu espacio personal',
+  description: 'Un espacio personal para abrir tus aplicaciones de comidas, actividad y lectura.',
   manifest: '/manifest.json',
   icons: { icon: '/icon.svg', apple: '/apple-touch-icon.png' },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#10b981',
+  themeColor: '#38bdf8',
   width: 'device-width',
   initialScale: 1,
 };

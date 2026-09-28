@@ -1,12 +1,12 @@
 {
   "id": "/",
-  "name": "Sabor & Cesta - Menú y Compra",
-  "short_name": "Sabor&Cesta",
-  "description": "Planificador de comidas y lista de la compra inteligente",
+  "name": "MiModo - Tu espacio personal",
+  "short_name": "MiModo",
+  "description": "Tus aplicaciones personales para comidas, actividad y lectura.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fafafa",
-  "theme_color": "#10b981",
+  "theme_color": "#38bdf8",
   "orientation": "portrait-primary",
   "icons": [
     {
