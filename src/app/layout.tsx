@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0b0e0f',
+  themeColor: '#100c0a',
   width: 'device-width',
   initialScale: 1,
 };
@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${jakarta.variable} font-sans antialiased`}>
-      <body className="min-h-screen bg-[#0b0e0f] text-[#eceeea] selection:bg-[#405141] selection:text-[#f0f1ed]">
+      <body className="min-h-screen bg-[#100c0a] text-[#f1e8e0] selection:bg-[#344c61] selection:text-[#f1e8e0]">
         <AppProvider>
           <div className="flex min-h-screen flex-col">
             <Navigation />

@@ -144,7 +144,7 @@ export default function CalendarioPage() {
       particleCount: 50,
       spread: 60,
       origin: { y: 0.5 },
-      colors: ['#10b981', '#34d399', '#6ee7b7'],
+      colors: ['#b78d6d', '#a8c7d4', '#d8b192'],
     });
 
     setTimeout(() => {
@@ -188,9 +188,9 @@ export default function CalendarioPage() {
       
       {/* Notificación flotante */}
       {notification && (
-        <div className="fixed top-20 right-4 z-50 flex items-center gap-2 rounded-2xl bg-[#222b28] px-4 py-2.5 text-xs font-bold text-white shadow-xl animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-20 right-4 z-50 flex items-center gap-2 rounded-2xl bg-[#80573d] px-4 py-2.5 text-xs font-bold text-white shadow-xl animate-in fade-in slide-in-from-top-2">
           <span>{notification}</span>
-          <button onClick={() => setNotification(null)} className="text-[#7d8983] hover:text-white">
+          <button onClick={() => setNotification(null)} className="text-[#81746a] hover:text-white">
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -200,14 +200,14 @@ export default function CalendarioPage() {
       <div className="mb-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-[#edf0ed] sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-[#f1e8e0] sm:text-3xl">
               Planificador de Comidas
             </h1>
-            <span className="rounded-full bg-[#19231d] px-2.5 py-0.5 text-xs font-bold text-[#a8c5ae]">
+            <span className="rounded-full bg-[#172431] px-2.5 py-0.5 text-xs font-bold text-[#a8c7d4]">
               {weekMealPlans.length} platos planificados
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#929d97] mt-1">
+          <p className="text-xs sm:text-sm text-[#a09288] mt-1">
             Organiza tu semana y transfiere los ingredientes al súper con 1 solo clic
           </p>
         </div>
@@ -216,23 +216,23 @@ export default function CalendarioPage() {
         <div className="flex flex-wrap items-center gap-2">
           
           {/* Navegador de Semanas */}
-          <div className="flex items-center rounded-2xl border border-[#2b3430]/80 bg-[#141a18] p-1 shadow-xs">
+          <div className="flex items-center rounded-2xl border border-[#3b2d24]/80 bg-[#191310] p-1 shadow-xs">
             <button
               onClick={() => setWeekOffset((prev) => prev - 1)}
-              className="flex h-8 w-8 items-center justify-center rounded-xl text-[#929d97] hover:bg-[#1a211e] hover:text-[#edf0ed] transition"
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-[#a09288] hover:bg-[#211812] hover:text-[#f1e8e0] transition"
               title="Semana anterior"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               onClick={() => setWeekOffset(0)}
-              className="px-3 text-xs font-bold text-[#c2cbc5] hover:text-[#edf0ed]"
+              className="px-3 text-xs font-bold text-[#c7b8ad] hover:text-[#f1e8e0]"
             >
               {weekOffset === 0 ? 'Esta Semana' : weekOffset > 0 ? `+${weekOffset} sem.` : `${weekOffset} sem.`}
             </button>
             <button
               onClick={() => setWeekOffset((prev) => prev + 1)}
-              className="flex h-8 w-8 items-center justify-center rounded-xl text-[#929d97] hover:bg-[#1a211e] hover:text-[#edf0ed] transition"
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-[#a09288] hover:bg-[#211812] hover:text-[#f1e8e0] transition"
               title="Semana siguiente"
             >
               <ChevronRight className="h-4 w-4" />
@@ -243,7 +243,7 @@ export default function CalendarioPage() {
           <button
             onClick={handleOpenTransfer}
             disabled={plannedIngredientsList.length === 0}
-            className="flex items-center gap-1.5 rounded-2xl bg-[#385440] px-3.5 py-2 text-xs font-bold text-white shadow-sm shadow-emerald-600/20 hover:bg-[#385440] disabled:opacity-40 transition"
+            className="flex items-center gap-1.5 rounded-2xl bg-[#80573d] px-3.5 py-2 text-xs font-bold text-white shadow-sm shadow-[#597b96]/20 hover:bg-[#80573d] disabled:opacity-40 transition"
             title="Añade ingredientes de los platos de la semana a la lista de compra"
           >
             <ShoppingCart className="h-4 w-4" />
@@ -253,10 +253,10 @@ export default function CalendarioPage() {
           {/* Rellenar inteligente */}
           <button
             onClick={handleAutoFill}
-            className="flex items-center gap-1.5 rounded-2xl border border-[#2b3430]/80 bg-[#141a18] px-3 py-2 text-xs font-semibold text-[#c2cbc5] shadow-xs hover:bg-[#1a211e] transition"
+            className="flex items-center gap-1.5 rounded-2xl border border-[#3b2d24]/80 bg-[#191310] px-3 py-2 text-xs font-semibold text-[#c7b8ad] shadow-xs hover:bg-[#211812] transition"
             title="Rellenar días vacíos con tus recetas"
           >
-            <Dices className="h-3.5 w-3.5 text-[#d5bc8c]" />
+            <Dices className="h-3.5 w-3.5 text-[#d8b192]" />
             <span className="hidden sm:inline">Rellenar</span>
           </button>
 
@@ -264,7 +264,7 @@ export default function CalendarioPage() {
           <button
             onClick={handleCopyNextWeek}
             disabled={weekMealPlans.length === 0}
-            className="flex items-center gap-1.5 rounded-2xl border border-[#2b3430]/80 bg-[#141a18] px-3 py-2 text-xs font-semibold text-[#c2cbc5] shadow-xs hover:bg-[#1a211e] disabled:opacity-40 transition"
+            className="flex items-center gap-1.5 rounded-2xl border border-[#3b2d24]/80 bg-[#191310] px-3 py-2 text-xs font-semibold text-[#c7b8ad] shadow-xs hover:bg-[#211812] disabled:opacity-40 transition"
             title="Copiar este menú a la semana siguiente"
           >
             <Copy className="h-3.5 w-3.5 text-[#a8c7d4]" />
@@ -275,7 +275,7 @@ export default function CalendarioPage() {
           {weekMealPlans.length > 0 && (
             <button
               onClick={() => setIsConfirmClearOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-[#2b3430]/80 bg-[#141a18] text-[#7d8983] hover:border-[#503638] hover:bg-[#291e1d] hover:text-[#e0aaa3] transition"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-[#3b2d24]/80 bg-[#191310] text-[#81746a] hover:border-[#503638] hover:bg-[#291e1d] hover:text-[#e0aaa3] transition"
               title="Vaciar menú de esta semana"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -288,8 +288,8 @@ export default function CalendarioPage() {
             className={cn(
               'flex items-center gap-1 rounded-2xl px-3 py-2 text-xs font-semibold transition border',
               showAllMealTypes
-                ? 'bg-[#222b28] text-white border-[#2b3430] shadow-xs'
-                : 'bg-[#141a18] text-[#aab4ae] border-[#2b3430]/80 hover:bg-[#1a211e]'
+                ? 'bg-[#80573d] text-white border-[#3b2d24] shadow-xs'
+                : 'bg-[#191310] text-[#b5a59a] border-[#3b2d24]/80 hover:bg-[#211812]'
             )}
           >
             <Coffee className="h-3.5 w-3.5" />
@@ -313,27 +313,27 @@ export default function CalendarioPage() {
             <div
               key={day.dateString}
               className={cn(
-                'flex flex-col rounded-3xl border bg-[#141a18] p-4 transition-all duration-200 shadow-xs',
+                'flex flex-col rounded-3xl border bg-[#191310] p-4 transition-all duration-200 shadow-xs',
                 day.isToday
-                  ? 'border-[#354a3b]/80 ring-2 ring-[#54745a]/10'
-                  : 'border-[#2b3430]/80 hover:border-[#2b3430]'
+                  ? 'border-[#344c61]/80 ring-2 ring-[#597b96]/10'
+                  : 'border-[#3b2d24]/80 hover:border-[#3b2d24]'
               )}
             >
               {/* Cabecera del Día */}
-              <div className="flex items-center justify-between border-b border-[#2b3430] pb-3">
+              <div className="flex items-center justify-between border-b border-[#3b2d24] pb-3">
                 <div className="flex items-center gap-2">
-                  <span className={cn('text-sm font-bold', day.isToday ? 'text-[#a8c5ae]' : 'text-[#d7ded9]')}>
+                  <span className={cn('text-sm font-bold', day.isToday ? 'text-[#a8c7d4]' : 'text-[#ded3c9]')}>
                     {day.dayName}
                   </span>
                   <span className={cn(
                     'flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold',
-                    day.isToday ? 'bg-[#385440] text-white' : 'bg-[#1a211e] text-[#aab4ae]'
+                    day.isToday ? 'bg-[#80573d] text-white' : 'bg-[#211812] text-[#b5a59a]'
                   )}>
                     {day.dayNumber}
                   </span>
                 </div>
                 {day.isToday && (
-                  <span className="rounded-full bg-[#19231d] px-2 py-0.5 text-[10px] font-bold text-[#a8c5ae]">
+                  <span className="rounded-full bg-[#172431] px-2 py-0.5 text-[10px] font-bold text-[#a8c7d4]">
                     Hoy
                   </span>
                 )}
@@ -344,15 +344,15 @@ export default function CalendarioPage() {
                 
                 {/* DESAYUNO (Opcional según toggle) */}
                 {showAllMealTypes && (
-                  <div className="rounded-2xl border border-[#2b3430] bg-[#1a211e]/50 p-2.5 transition hover:border-[#51452f] hover:bg-[#282319]/20">
-                    <div className="flex items-center justify-between text-[10px] font-semibold text-[#d5bc8c]">
+                  <div className="rounded-2xl border border-[#3b2d24] bg-[#211812]/50 p-2.5 transition hover:border-[#543c2c] hover:bg-[#302218]/20">
+                    <div className="flex items-center justify-between text-[10px] font-semibold text-[#d8b192]">
                       <span className="flex items-center gap-1">
                         <Coffee className="h-3 w-3" /> Desayuno
                       </span>
                       {breakfast && (
                         <button
                           onClick={() => removeMealPlan(breakfast.id)}
-                          className="text-[#68746e] hover:text-[#e0aaa3] transition"
+                          className="text-[#6e625a] hover:text-[#e0aaa3] transition"
                         >
                           <Trash2 className="h-3 w-3" />
                         </button>
@@ -363,14 +363,14 @@ export default function CalendarioPage() {
                         onClick={() => handleOpenSlot(day.dateString, 'desayuno', day.dayName)}
                         className="mt-1 cursor-pointer"
                       >
-                        <p className="text-xs font-semibold text-[#d7ded9] line-clamp-1">
+                        <p className="text-xs font-semibold text-[#ded3c9] line-clamp-1">
                           {breakfast.title}
                         </p>
                       </div>
                     ) : (
                       <button
                         onClick={() => handleOpenSlot(day.dateString, 'desayuno', day.dayName)}
-                        className="mt-1 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#2b3430] py-1 text-[10px] text-[#7d8983] hover:text-[#aab4ae]"
+                        className="mt-1 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#3b2d24] py-1 text-[10px] text-[#81746a] hover:text-[#b5a59a]"
                       >
                         <Plus className="h-2.5 w-2.5" /> Añadir
                       </button>
@@ -379,15 +379,15 @@ export default function CalendarioPage() {
                 )}
 
                 {/* ALMUERZO (Principal) */}
-                <div className="flex-1 rounded-2xl border border-[#2b3430] bg-[#1a211e]/60 p-3 transition hover:border-[#51452f] hover:bg-[#282319]/20">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-[#d5bc8c]">
+                <div className="flex-1 rounded-2xl border border-[#3b2d24] bg-[#211812]/60 p-3 transition hover:border-[#543c2c] hover:bg-[#302218]/20">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-[#d8b192]">
                     <span className="flex items-center gap-1">
                       <Utensils className="h-3 w-3" /> Almuerzo
                     </span>
                     {lunch && (
                       <button
                         onClick={() => removeMealPlan(lunch.id)}
-                        className="text-[#68746e] hover:text-[#e0aaa3] transition"
+                        className="text-[#6e625a] hover:text-[#e0aaa3] transition"
                         title="Eliminar plato"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -400,16 +400,16 @@ export default function CalendarioPage() {
                       onClick={() => handleOpenSlot(day.dateString, 'almuerzo', day.dayName)}
                       className="mt-1.5 cursor-pointer"
                     >
-                      <p className="text-xs font-bold text-[#d7ded9] line-clamp-2 hover:text-[#a8c5ae] transition">
+                      <p className="text-xs font-bold text-[#ded3c9] line-clamp-2 hover:text-[#a8c7d4] transition">
                         {lunch.title}
                       </p>
                       {lunch.notes && (
-                        <p className="mt-0.5 text-[10px] text-[#7d8983] line-clamp-1 italic">
+                        <p className="mt-0.5 text-[10px] text-[#81746a] line-clamp-1 italic">
                           &ldquo;{lunch.notes}&rdquo;
                         </p>
                       )}
                       {lunch.recipe_id && (
-                        <span className="mt-1 inline-flex items-center gap-0.5 text-[10px] font-medium text-[#a8c5ae]">
+                        <span className="mt-1 inline-flex items-center gap-0.5 text-[10px] font-medium text-[#a8c7d4]">
                           <ChefHat className="h-2.5 w-2.5" /> Con receta
                         </span>
                       )}
@@ -417,7 +417,7 @@ export default function CalendarioPage() {
                   ) : (
                     <button
                       onClick={() => handleOpenSlot(day.dateString, 'almuerzo', day.dayName)}
-                      className="mt-2 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#2b3430] py-2.5 text-[11px] font-medium text-[#7d8983] hover:border-[#2b3430] hover:text-[#aab4ae] transition"
+                      className="mt-2 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#3b2d24] py-2.5 text-[11px] font-medium text-[#81746a] hover:border-[#3b2d24] hover:text-[#b5a59a] transition"
                     >
                       <Plus className="h-3 w-3" /> Añadir comida
                     </button>
@@ -426,15 +426,15 @@ export default function CalendarioPage() {
 
                 {/* MERIENDA (Opcional según toggle) */}
                 {showAllMealTypes && (
-                  <div className="rounded-2xl border border-[#2b3430] bg-[#1a211e]/50 p-2.5 transition hover:border-[#51452f] hover:bg-[#282319]/20">
-                    <div className="flex items-center justify-between text-[10px] font-semibold text-[#d5bc8c]">
+                  <div className="rounded-2xl border border-[#3b2d24] bg-[#211812]/50 p-2.5 transition hover:border-[#543c2c] hover:bg-[#302218]/20">
+                    <div className="flex items-center justify-between text-[10px] font-semibold text-[#d8b192]">
                       <span className="flex items-center gap-1">
                         <Cookie className="h-3 w-3" /> Merienda
                       </span>
                       {snack && (
                         <button
                           onClick={() => removeMealPlan(snack.id)}
-                          className="text-[#68746e] hover:text-[#e0aaa3] transition"
+                          className="text-[#6e625a] hover:text-[#e0aaa3] transition"
                         >
                           <Trash2 className="h-3 w-3" />
                         </button>
@@ -445,14 +445,14 @@ export default function CalendarioPage() {
                         onClick={() => handleOpenSlot(day.dateString, 'merienda', day.dayName)}
                         className="mt-1 cursor-pointer"
                       >
-                        <p className="text-xs font-semibold text-[#d7ded9] line-clamp-1">
+                        <p className="text-xs font-semibold text-[#ded3c9] line-clamp-1">
                           {snack.title}
                         </p>
                       </div>
                     ) : (
                       <button
                         onClick={() => handleOpenSlot(day.dateString, 'merienda', day.dayName)}
-                        className="mt-1 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#2b3430] py-1 text-[10px] text-[#7d8983] hover:text-[#aab4ae]"
+                        className="mt-1 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#3b2d24] py-1 text-[10px] text-[#81746a] hover:text-[#b5a59a]"
                       >
                         <Plus className="h-2.5 w-2.5" /> Añadir
                       </button>
@@ -461,15 +461,15 @@ export default function CalendarioPage() {
                 )}
 
                 {/* CENA (Principal) */}
-                <div className="flex-1 rounded-2xl border border-[#2b3430] bg-[#1a211e]/60 p-3 transition hover:border-[#403b4d] hover:bg-[#211f28]/20">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-[#beb5d4]">
+                <div className="flex-1 rounded-2xl border border-[#3b2d24] bg-[#211812]/60 p-3 transition hover:border-[#344c61] hover:bg-[#172431]/20">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-[#a8c7d4]">
                     <span className="flex items-center gap-1">
                       <Moon className="h-3 w-3" /> Cena
                     </span>
                     {dinner && (
                       <button
                         onClick={() => removeMealPlan(dinner.id)}
-                        className="text-[#68746e] hover:text-[#e0aaa3] transition"
+                        className="text-[#6e625a] hover:text-[#e0aaa3] transition"
                         title="Eliminar plato"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -482,16 +482,16 @@ export default function CalendarioPage() {
                       onClick={() => handleOpenSlot(day.dateString, 'cena', day.dayName)}
                       className="mt-1.5 cursor-pointer"
                     >
-                      <p className="text-xs font-bold text-[#d7ded9] line-clamp-2 hover:text-[#a8c5ae] transition">
+                      <p className="text-xs font-bold text-[#ded3c9] line-clamp-2 hover:text-[#a8c7d4] transition">
                         {dinner.title}
                       </p>
                       {dinner.notes && (
-                        <p className="mt-0.5 text-[10px] text-[#7d8983] line-clamp-1 italic">
+                        <p className="mt-0.5 text-[10px] text-[#81746a] line-clamp-1 italic">
                           &ldquo;{dinner.notes}&rdquo;
                         </p>
                       )}
                       {dinner.recipe_id && (
-                        <span className="mt-1 inline-flex items-center gap-0.5 text-[10px] font-medium text-[#a8c5ae]">
+                        <span className="mt-1 inline-flex items-center gap-0.5 text-[10px] font-medium text-[#a8c7d4]">
                           <ChefHat className="h-2.5 w-2.5" /> Con receta
                         </span>
                       )}
@@ -499,7 +499,7 @@ export default function CalendarioPage() {
                   ) : (
                     <button
                       onClick={() => handleOpenSlot(day.dateString, 'cena', day.dayName)}
-                      className="mt-2 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#2b3430] py-2.5 text-[11px] font-medium text-[#7d8983] hover:border-[#2b3430] hover:text-[#aab4ae] transition"
+                      className="mt-2 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-[#3b2d24] py-2.5 text-[11px] font-medium text-[#81746a] hover:border-[#3b2d24] hover:text-[#b5a59a] transition"
                     >
                       <Plus className="h-3 w-3" /> Añadir cena
                     </button>
@@ -514,20 +514,20 @@ export default function CalendarioPage() {
 
       {/* 3. MODAL DE ASIGNACIÓN DE COMIDA */}
       {activeSlot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#222b28]/40 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="w-full max-w-md rounded-3xl border border-[#2b3430] bg-[#141a18] p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#2b3430] pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080604]/75 p-4 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="w-full max-w-md rounded-3xl border border-[#3b2d24] bg-[#191310] p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#3b2d24] pb-3">
               <div>
-                <h3 className="text-base font-bold text-[#edf0ed]">
+                <h3 className="text-base font-bold text-[#f1e8e0]">
                   Planificar {activeSlot.mealType.charAt(0).toUpperCase() + activeSlot.mealType.slice(1)}
                 </h3>
-                <p className="text-xs text-[#929d97]">
+                <p className="text-xs text-[#a09288]">
                   {activeSlot.dayName}, {activeSlot.date}
                 </p>
               </div>
               <button
                 onClick={() => setActiveSlot(null)}
-                className="rounded-xl p-1 text-[#7d8983] hover:bg-[#1a211e] hover:text-[#c2cbc5]"
+                className="rounded-xl p-1 text-[#81746a] hover:bg-[#211812] hover:text-[#c7b8ad]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -535,7 +535,7 @@ export default function CalendarioPage() {
 
             {/* Opción 1: Seleccionar de Recetas / Platos Habituales */}
             <div className="mt-4">
-              <label className="text-xs font-bold text-[#c2cbc5]">
+              <label className="text-xs font-bold text-[#c7b8ad]">
                 Elegir de tus platos habituales:
               </label>
               <div className="mt-2 max-h-44 space-y-1.5 overflow-y-auto pr-1">
@@ -551,12 +551,12 @@ export default function CalendarioPage() {
                       className={cn(
                         'flex cursor-pointer items-center justify-between rounded-2xl p-2.5 text-xs transition',
                         isSelected
-                          ? 'border-2 border-[#354a3b] bg-[#19231d] font-bold text-[#a8c5ae]'
-                          : 'border border-[#2b3430] bg-[#1a211e] hover:bg-[#1a211e] text-[#c2cbc5]'
+                          ? 'border-2 border-[#344c61] bg-[#172431] font-bold text-[#a8c7d4]'
+                          : 'border border-[#3b2d24] bg-[#211812] hover:bg-[#211812] text-[#c7b8ad]'
                       )}
                     >
                       <span>{rec.name}</span>
-                      <span className="text-[10px] text-[#7d8983] font-normal">
+                      <span className="text-[10px] text-[#81746a] font-normal">
                         {rec.ingredients.length} ingr.
                       </span>
                     </div>
@@ -566,8 +566,8 @@ export default function CalendarioPage() {
             </div>
 
             {/* Opción 2: Escribir comida libremente */}
-            <div className="mt-4 border-t border-[#2b3430] pt-4">
-              <label className="text-xs font-bold text-[#c2cbc5]">
+            <div className="mt-4 border-t border-[#3b2d24] pt-4">
+              <label className="text-xs font-bold text-[#c7b8ad]">
                 O escribe cualquier plato al vuelo:
               </label>
               <input
@@ -578,19 +578,19 @@ export default function CalendarioPage() {
                   setCustomTitle(e.target.value);
                   setSelectedRecipeId('');
                 }}
-                className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-3.5 py-2.5 text-sm text-[#edf0ed] focus:border-[#354a3b] focus:outline-none focus:ring-2 focus:ring-[#54745a]/20"
+                className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-3.5 py-2.5 text-sm text-[#f1e8e0] focus:border-[#344c61] focus:outline-none focus:ring-2 focus:ring-[#597b96]/20"
               />
             </div>
 
             {/* Notas / observaciones */}
             <div className="mt-3">
-              <label className="text-xs font-bold text-[#c2cbc5]">Nota u observación (opcional):</label>
+              <label className="text-xs font-bold text-[#c7b8ad]">Nota u observación (opcional):</label>
               <input
                 type="text"
                 placeholder="Ej. Comida para 2, Llevar táper al trabajo..."
                 value={customNotes}
                 onChange={(e) => setCustomNotes(e.target.value)}
-                className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-3.5 py-2 text-xs text-[#edf0ed] focus:border-[#354a3b] focus:outline-none"
+                className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-3.5 py-2 text-xs text-[#f1e8e0] focus:border-[#344c61] focus:outline-none"
               />
             </div>
 
@@ -598,14 +598,14 @@ export default function CalendarioPage() {
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setActiveSlot(null)}
-                className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#aab4ae] hover:bg-[#1a211e]"
+                className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#b5a59a] hover:bg-[#211812]"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSaveMeal}
                 disabled={!customTitle.trim()}
-                className="rounded-2xl bg-[#222b28] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#303a36] disabled:opacity-40"
+                className="rounded-2xl bg-[#80573d] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#93694b] disabled:opacity-40"
               >
                 Guardar
               </button>
@@ -616,25 +616,25 @@ export default function CalendarioPage() {
 
       {/* 4. MODAL DE TRANSFERENCIA A LISTA DE LA COMPRA */}
       {isTransferModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#222b28]/40 p-4 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="w-full max-w-lg rounded-3xl border border-[#2b3430] bg-[#141a18] p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#2b3430] pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080604]/75 p-4 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="w-full max-w-lg rounded-3xl border border-[#3b2d24] bg-[#191310] p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#3b2d24] pb-3">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#19231d] text-[#a8c5ae]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#172431] text-[#a8c7d4]">
                   <ShoppingCart className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#edf0ed]">
+                  <h3 className="text-base font-bold text-[#f1e8e0]">
                     Añadir Ingredientes a la Compra
                   </h3>
-                  <p className="text-xs text-[#7d8983]">
+                  <p className="text-xs text-[#81746a]">
                     Marca solo los que necesites comprar en el súper
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsTransferModalOpen(false)}
-                className="rounded-xl p-1 text-[#7d8983] hover:bg-[#1a211e] hover:text-[#c2cbc5]"
+                className="rounded-xl p-1 text-[#81746a] hover:bg-[#211812] hover:text-[#c7b8ad]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -642,10 +642,10 @@ export default function CalendarioPage() {
 
             {transferSuccess ? (
               <div className="py-8 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#19231d] text-[#a8c5ae] mb-2">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#172431] text-[#a8c7d4] mb-2">
                   <Check className="h-6 w-6 stroke-[3]" />
                 </div>
-                <p className="text-sm font-bold text-[#a8c5ae]">{transferSuccess}</p>
+                <p className="text-sm font-bold text-[#a8c7d4]">{transferSuccess}</p>
               </div>
             ) : (
               <>
@@ -664,8 +664,8 @@ export default function CalendarioPage() {
                         className={cn(
                           'flex cursor-pointer items-center justify-between rounded-2xl border p-2.5 text-xs transition',
                           isChecked
-                            ? 'border-[#354a3b] bg-[#19231d]/50 text-[#edf0ed]'
-                            : 'border-[#2b3430] bg-[#141a18] text-[#7d8983] opacity-60'
+                            ? 'border-[#344c61] bg-[#172431]/50 text-[#f1e8e0]'
+                            : 'border-[#3b2d24] bg-[#191310] text-[#81746a] opacity-60'
                         )}
                       >
                         <div className="flex items-center gap-2.5">
@@ -673,14 +673,14 @@ export default function CalendarioPage() {
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => {}}
-                            className="h-4 w-4 rounded-lg text-[#a8c5ae] focus:ring-[#54745a]"
+                            className="h-4 w-4 rounded-lg text-[#a8c7d4] focus:ring-[#597b96]"
                           />
                           <span className="font-semibold">{item.name}</span>
                           {item.quantity && (
-                            <span className="text-[11px] text-[#7d8983]">({item.quantity})</span>
+                            <span className="text-[11px] text-[#81746a]">({item.quantity})</span>
                           )}
                         </div>
-                        <span className="text-[10px] text-[#7d8983] font-medium">
+                        <span className="text-[10px] text-[#81746a] font-medium">
                           para {item.recipeName}
                         </span>
                       </div>
@@ -688,20 +688,20 @@ export default function CalendarioPage() {
                   })}
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-[#2b3430] pt-4">
-                  <span className="text-xs text-[#929d97]">
+                <div className="mt-6 flex items-center justify-between border-t border-[#3b2d24] pt-4">
+                  <span className="text-xs text-[#a09288]">
                     {Object.values(selectedIngredients).filter(Boolean).length} ingredientes seleccionados
                   </span>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setIsTransferModalOpen(false)}
-                      className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#aab4ae] hover:bg-[#1a211e]"
+                      className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#b5a59a] hover:bg-[#211812]"
                     >
                       Cancelar
                     </button>
                     <button
                       onClick={handleExecuteTransfer}
-                      className="rounded-2xl bg-[#385440] px-5 py-2 text-xs font-bold text-white shadow-sm shadow-emerald-600/30 hover:bg-[#385440]"
+                      className="rounded-2xl bg-[#80573d] px-5 py-2 text-xs font-bold text-white shadow-sm shadow-[#597b96]/30 hover:bg-[#80573d]"
                     >
                       Añadir a la Compra
                     </button>
@@ -715,19 +715,19 @@ export default function CalendarioPage() {
 
       {/* 5. MODAL CONFIRMACIÓN VACIAR SEMANA */}
       {isConfirmClearOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#222b28]/40 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-sm rounded-3xl border border-[#2b3430] bg-[#141a18] p-6 shadow-2xl text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080604]/75 p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-sm rounded-3xl border border-[#3b2d24] bg-[#191310] p-6 shadow-2xl text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#291e1d] text-[#e0aaa3] mb-3">
               <AlertTriangle className="h-6 w-6" />
             </div>
-            <h3 className="text-base font-bold text-[#edf0ed]">¿Vaciar menú de esta semana?</h3>
-            <p className="mt-1 text-xs text-[#929d97]">
+            <h3 className="text-base font-bold text-[#f1e8e0]">¿Vaciar menú de esta semana?</h3>
+            <p className="mt-1 text-xs text-[#a09288]">
               Se eliminarán las comidas asignadas a estos 7 días. Esta acción no se puede deshacer.
             </p>
             <div className="mt-5 flex justify-center gap-2">
               <button
                 onClick={() => setIsConfirmClearOpen(false)}
-                className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#aab4ae] hover:bg-[#1a211e]"
+                className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#b5a59a] hover:bg-[#211812]"
               >
                 Cancelar
               </button>
