@@ -45,23 +45,23 @@ export default function HomePage() {
       
       {/* Banner de invitación a login si no ha iniciado sesión */}
       {!user && (
-        <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-3xl border border-emerald-200 bg-emerald-50/60 p-4 shadow-xs">
+        <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-3xl border border-[#354a3b] bg-[#19231d]/60 p-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-[#304b39] text-white">
               <Sparkles className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-emerald-950">
+              <p className="text-xs font-bold text-[#a8c5ae]">
                 Comparte la compra y comidas en tiempo real
               </p>
-              <p className="text-[11px] text-emerald-700">
+              <p className="text-[11px] text-[#a8c5ae]">
                 Inicia sesión o regístrate para que tu lista se sincronice al instante con tu familia desde cualquier dispositivo.
               </p>
             </div>
           </div>
           <Link
             href="/login"
-            className="shrink-0 rounded-2xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-emerald-700 transition"
+            className="shrink-0 rounded-2xl bg-[#385440] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#385440] transition"
           >
             Iniciar Sesión / Registrarme
           </Link>
@@ -71,20 +71,20 @@ export default function HomePage() {
       {/* 1. BIENVENIDA Y FECHA */}
       <div className="mb-8 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-            <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#19231d] px-3 py-1 text-xs font-semibold text-[#a8c5ae]">
+            <Sparkles className="h-3.5 w-3.5 text-[#a8c5ae]" />
             Hoy es {todayFormatted}
           </span>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#edf0ed] sm:text-3xl">
             {user ? `¡Hola de nuevo! ¿Qué cocinamos hoy?` : `¡Hola! ¿Qué cocinamos hoy?`}
           </h1>
         </div>
 
         <Link
           href="/calendario"
-          className="inline-flex items-center gap-2 self-start rounded-2xl border border-neutral-200 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 shadow-sm transition hover:bg-neutral-50 hover:text-neutral-900"
+          className="inline-flex items-center gap-2 self-start rounded-2xl border border-[#2b3430] bg-[#141a18] px-4 py-2 text-sm font-semibold text-[#c2cbc5] shadow-sm transition hover:bg-[#1a211e] hover:text-[#edf0ed]"
         >
-          <CalendarDays className="h-4 w-4 text-emerald-600" />
+          <CalendarDays className="h-4 w-4 text-[#a8c5ae]" />
           <span>Ver toda la semana</span>
         </Link>
       </div>
@@ -93,17 +93,17 @@ export default function HomePage() {
         
         {/* 2. MENÚ DE HOY (Columna Izquierda / 7 columnas en desktop) */}
         <div className="space-y-6 md:col-span-7">
-          <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+          <div className="rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-6 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#2b3430] pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#282319] text-[#d5bc8c]">
                   <Utensils className="h-4 w-4" />
                 </div>
-                <h2 className="text-lg font-bold text-neutral-900">Menú para hoy</h2>
+                <h2 className="text-lg font-bold text-[#edf0ed]">Menú para hoy</h2>
               </div>
               <Link
                 href="/calendario"
-                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                className="text-xs font-semibold text-[#a8c5ae] hover:text-[#a8c5ae]"
               >
                 Editar menú
               </Link>
@@ -111,26 +111,26 @@ export default function HomePage() {
 
             <div className="mt-5 space-y-4">
               {/* Almuerzo */}
-              <div className="group relative overflow-hidden rounded-2xl border border-neutral-100 bg-neutral-50/70 p-4 transition-all hover:border-emerald-200 hover:bg-emerald-50/30">
+              <div className="group relative overflow-hidden rounded-2xl border border-[#2b3430] bg-[#1a211e]/70 p-4 transition-all hover:border-[#354a3b] hover:bg-[#19231d]/30">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+                    <span className="rounded-full bg-[#282319] px-2.5 py-0.5 text-xs font-semibold text-[#d5bc8c]">
                       Almuerzo
                     </span>
                   </div>
-                  <span className="text-xs text-neutral-400">14:00h aprox.</span>
+                  <span className="text-xs text-[#7d8983]">14:00h aprox.</span>
                 </div>
                 <div className="mt-2.5">
-                  <h3 className="text-base font-bold text-neutral-800">
+                  <h3 className="text-base font-bold text-[#d7ded9]">
                     {todayLunch ? todayLunch.title : 'Sin plato asignado'}
                   </h3>
                   {todayLunch?.notes && (
-                    <p className="mt-1 text-xs text-neutral-500">{todayLunch.notes}</p>
+                    <p className="mt-1 text-xs text-[#929d97]">{todayLunch.notes}</p>
                   )}
                   {!todayLunch && (
                     <Link
                       href="/calendario"
-                      className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:underline"
+                      className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#a8c5ae] hover:underline"
                     >
                       <Plus className="h-3.5 w-3.5" /> Elegir qué comer hoy
                     </Link>
@@ -139,26 +139,26 @@ export default function HomePage() {
               </div>
 
               {/* Cena */}
-              <div className="group relative overflow-hidden rounded-2xl border border-neutral-100 bg-neutral-50/70 p-4 transition-all hover:border-indigo-200 hover:bg-indigo-50/30">
+              <div className="group relative overflow-hidden rounded-2xl border border-[#2b3430] bg-[#1a211e]/70 p-4 transition-all hover:border-[#403b4d] hover:bg-[#211f28]/30">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-semibold text-indigo-800">
+                    <span className="rounded-full bg-[#211f28] px-2.5 py-0.5 text-xs font-semibold text-[#beb5d4]">
                       Cena
                     </span>
                   </div>
-                  <span className="text-xs text-neutral-400">21:00h aprox.</span>
+                  <span className="text-xs text-[#7d8983]">21:00h aprox.</span>
                 </div>
                 <div className="mt-2.5">
-                  <h3 className="text-base font-bold text-neutral-800">
+                  <h3 className="text-base font-bold text-[#d7ded9]">
                     {todayDinner ? todayDinner.title : 'Sin plato asignado'}
                   </h3>
                   {todayDinner?.notes && (
-                    <p className="mt-1 text-xs text-neutral-500">{todayDinner.notes}</p>
+                    <p className="mt-1 text-xs text-[#929d97]">{todayDinner.notes}</p>
                   )}
                   {!todayDinner && (
                     <Link
                       href="/calendario"
-                      className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:underline"
+                      className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#a8c5ae] hover:underline"
                     >
                       <Plus className="h-3.5 w-3.5" /> Elegir cena ligera
                     </Link>
@@ -169,15 +169,15 @@ export default function HomePage() {
           </div>
 
           {/* Ideas rápidas de recetas */}
-          <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#19231d] text-[#a8c5ae]">
                   <ChefHat className="h-4 w-4" />
                 </div>
-                <h3 className="text-base font-bold text-neutral-900">Tus Platos Habituales</h3>
+                <h3 className="text-base font-bold text-[#edf0ed]">Tus Platos Habituales</h3>
               </div>
-              <Link href="/recetas" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700">
+              <Link href="/recetas" className="text-xs font-semibold text-[#a8c5ae] hover:text-[#a8c5ae]">
                 Ver todos ({recipes.length})
               </Link>
             </div>
@@ -186,15 +186,15 @@ export default function HomePage() {
               {recipes.slice(0, 4).map((recipe) => (
                 <div
                   key={recipe.id}
-                  className="flex items-center justify-between rounded-2xl border border-neutral-100 bg-neutral-50/50 p-3 text-left transition hover:border-neutral-200 hover:bg-neutral-100/70"
+                  className="flex items-center justify-between rounded-2xl border border-[#2b3430] bg-[#1a211e]/50 p-3 text-left transition hover:border-[#2b3430] hover:bg-[#1a211e]/70"
                 >
                   <div className="min-w-0 pr-2">
-                    <p className="truncate text-sm font-semibold text-neutral-800">{recipe.name}</p>
-                    <p className="text-[11px] text-neutral-400">
+                    <p className="truncate text-sm font-semibold text-[#d7ded9]">{recipe.name}</p>
+                    <p className="text-[11px] text-[#7d8983]">
                       {recipe.ingredients.length} ingredientes
                     </p>
                   </div>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-neutral-500 shadow-2xs border border-neutral-100">
+                  <span className="rounded-full bg-[#141a18] px-2 py-0.5 text-[10px] font-medium text-[#929d97] shadow-2xs border border-[#2b3430]">
                     {recipe.category}
                   </span>
                 </div>
@@ -205,16 +205,16 @@ export default function HomePage() {
 
         {/* 3. RESUMEN DE LA LISTA DE LA COMPRA (Columna Derecha / 5 columnas) */}
         <div className="space-y-6 md:col-span-5">
-          <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-6 shadow-sm">
             
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-sm shadow-emerald-500/30">
+                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#304b39] text-white shadow-sm shadow-emerald-500/30">
                   <ShoppingCart className="h-4 w-4" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-neutral-900">Lista de la Compra</h2>
-                  <p className="text-xs text-neutral-400">
+                  <h2 className="text-base font-bold text-[#edf0ed]">Lista de la Compra</h2>
+                  <p className="text-xs text-[#7d8983]">
                     {pendingItems.length} pendientes
                   </p>
                 </div>
@@ -222,7 +222,7 @@ export default function HomePage() {
 
               <Link
                 href="/lista"
-                className="flex items-center gap-1 rounded-2xl bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-100 transition"
+                className="flex items-center gap-1 rounded-2xl bg-[#19231d] px-3 py-1.5 text-xs font-bold text-[#a8c5ae] hover:bg-[#19231d] transition"
               >
                 <span>Ir a la lista</span>
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -231,13 +231,13 @@ export default function HomePage() {
 
             {/* Barra de progreso */}
             <div className="mt-5">
-              <div className="flex justify-between text-xs font-semibold text-neutral-600 mb-1.5">
+              <div className="flex justify-between text-xs font-semibold text-[#aab4ae] mb-1.5">
                 <span>Progreso de compra</span>
                 <span>{progressPercent}%</span>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-[#1a211e]">
                 <div
-                  className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                  className="h-full rounded-full bg-[#304b39] transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -250,12 +250,12 @@ export default function HomePage() {
                 placeholder="Añadir producto rápido..."
                 value={quickInput}
                 onChange={(e) => setQuickInput(e.target.value)}
-                className="flex-1 rounded-2xl border border-neutral-200 bg-neutral-50 px-3.5 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
+                className="flex-1 rounded-2xl border border-[#2b3430] bg-[#1a211e] px-3.5 py-2 text-sm text-[#edf0ed] placeholder:text-[#7d8983] focus:border-[#354a3b] focus:bg-[#141a18] focus:outline-none focus:ring-2 focus:ring-[#54745a]/20 transition"
               />
               <button
                 type="submit"
                 disabled={!quickInput.trim()}
-                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-neutral-900 text-white hover:bg-neutral-800 disabled:opacity-40 transition"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#222b28] text-white hover:bg-[#303a36] disabled:opacity-40 transition"
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -270,36 +270,36 @@ export default function HomePage() {
                   className={cn(
                     'flex cursor-pointer items-center justify-between rounded-2xl p-2.5 transition-all',
                     item.is_bought
-                      ? 'bg-neutral-50 text-neutral-400 line-through'
-                      : 'border border-neutral-100 bg-white hover:border-emerald-200 hover:bg-emerald-50/20'
+                      ? 'bg-[#1a211e] text-[#7d8983] line-through'
+                      : 'border border-[#2b3430] bg-[#141a18] hover:border-[#354a3b] hover:bg-[#19231d]/20'
                   )}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     {item.is_bought ? (
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#a8c5ae]" />
                     ) : (
-                      <Circle className="h-4 w-4 shrink-0 text-neutral-300" />
+                      <Circle className="h-4 w-4 shrink-0 text-[#68746e]" />
                     )}
                     <span className="truncate text-sm font-medium">{item.name}</span>
                   </div>
                   {item.quantity && (
-                    <span className="shrink-0 text-xs text-neutral-400">{item.quantity}</span>
+                    <span className="shrink-0 text-xs text-[#7d8983]">{item.quantity}</span>
                   )}
                 </div>
               ))}
 
               {shoppingItems.length === 0 && (
-                <div className="py-6 text-center text-xs text-neutral-400">
+                <div className="py-6 text-center text-xs text-[#7d8983]">
                   🎉 ¡No tienes nada pendiente de comprar!
                 </div>
               )}
             </div>
 
             {/* Botón directo a "Modo Súper" */}
-            <div className="mt-5 border-t border-neutral-100 pt-4">
+            <div className="mt-5 border-t border-[#2b3430] pt-4">
               <Link
                 href="/lista?modo=super"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-sm shadow-emerald-600/30 hover:bg-emerald-700 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#385440] py-2.5 text-xs font-bold text-white shadow-sm shadow-emerald-600/30 hover:bg-[#385440] transition"
               >
                 <span>🛒 Abrir Modo &ldquo;En el Súper&rdquo;</span>
               </Link>

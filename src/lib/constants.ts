@@ -1,15 +1,15 @@
 import { ShoppingCategory, Recipe, ShoppingItem } from './types';
 
 export const SHOPPING_CATEGORIES: { name: ShoppingCategory; color: string; bg: string; border: string; icon: string }[] = [
-  { name: 'Frutas y Verduras', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', icon: 'Apple' },
-  { name: 'Carnes y Pescados', color: 'text-rose-700', bg: 'bg-rose-50', border: 'border-rose-200', icon: 'Beef' },
-  { name: 'Lácteos y Huevos', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200', icon: 'Milk' },
-  { name: 'Panadería y Cereales', color: 'text-amber-800', bg: 'bg-orange-50', border: 'border-orange-200', icon: 'Croissant' },
-  { name: 'Despensa y Pasta', color: 'text-yellow-800', bg: 'bg-yellow-50', border: 'border-yellow-200', icon: 'Package' },
-  { name: 'Congelados', color: 'text-cyan-700', bg: 'bg-cyan-50', border: 'border-cyan-200', icon: 'Snowflake' },
-  { name: 'Bebidas', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200', icon: 'CupSoda' },
-  { name: 'Limpieza y Hogar', color: 'text-indigo-700', bg: 'bg-indigo-50', border: 'border-indigo-200', icon: 'Sparkles' },
-  { name: 'Otros', color: 'text-slate-700', bg: 'bg-slate-50', border: 'border-slate-200', icon: 'ShoppingBag' },
+  { name: 'Frutas y Verduras', color: 'text-[#a8c5ae]', bg: 'bg-[#19231d]', border: 'border-[#354a3b]', icon: 'Apple' },
+  { name: 'Carnes y Pescados', color: 'text-[#e0aaa3]', bg: 'bg-[#291e1d]', border: 'border-[#503638]', icon: 'Beef' },
+  { name: 'Lácteos y Huevos', color: 'text-[#d5bc8c]', bg: 'bg-[#282319]', border: 'border-[#51452f]', icon: 'Milk' },
+  { name: 'Panadería y Cereales', color: 'text-[#d5bc8c]', bg: 'bg-[#282319]', border: 'border-[#51452f]', icon: 'Croissant' },
+  { name: 'Despensa y Pasta', color: 'text-[#d5bc8c]', bg: 'bg-[#282319]', border: 'border-[#51452f]', icon: 'Package' },
+  { name: 'Congelados', color: 'text-[#a8c7d4]', bg: 'bg-[#192226]', border: 'border-[#344951]', icon: 'Snowflake' },
+  { name: 'Bebidas', color: 'text-[#a8c7d4]', bg: 'bg-[#192226]', border: 'border-[#344951]', icon: 'CupSoda' },
+  { name: 'Limpieza y Hogar', color: 'text-[#beb5d4]', bg: 'bg-[#211f28]', border: 'border-[#403b4d]', icon: 'Sparkles' },
+  { name: 'Otros', color: 'text-[#c2cbc5]', bg: 'bg-[#1a211e]', border: 'border-[#2b3430]', icon: 'ShoppingBag' },
 ];
 
 export const MEAL_TYPES = [

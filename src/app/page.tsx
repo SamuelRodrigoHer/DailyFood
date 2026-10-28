@@ -29,9 +29,9 @@ const channels: Channel[] = [
     status: 'Disponible',
     href: '/hoy',
     icon: Utensils,
-    art: 'from-cyan-100 via-sky-50 to-white',
-    iconColor: 'bg-sky-500',
-    glow: 'bg-sky-200',
+    art: 'from-[#182326] via-[#182326] to-[#141a18]',
+    iconColor: 'bg-[#3a5963]',
+    glow: 'bg-[#192226]',
   },
   {
     number: '02',
@@ -40,9 +40,9 @@ const channels: Channel[] = [
     status: 'Disponible',
     href: '/gimnasio',
     icon: Activity,
-    art: 'from-rose-100 via-orange-50 to-white',
-    iconColor: 'bg-rose-400',
-    glow: 'bg-orange-200',
+    art: 'from-[#251c1b] via-[#251c1b] to-[#141a18]',
+    iconColor: 'bg-[#513438]',
+    glow: 'bg-[#282319]',
   },
   {
     number: '03',
@@ -51,9 +51,9 @@ const channels: Channel[] = [
     status: 'Disponible',
     href: '/biblioteca',
     icon: BookOpen,
-    art: 'from-violet-100 via-indigo-50 to-white',
-    iconColor: 'bg-violet-500',
-    glow: 'bg-indigo-200',
+    art: 'from-[#211f27] via-[#211f27] to-[#141a18]',
+    iconColor: 'bg-[#4a435c]',
+    glow: 'bg-[#211f28]',
   },
 ];
 
@@ -66,41 +66,41 @@ function ChannelCard({ channel }: { channel: Channel }) {
       >
         <div className={`absolute -right-7 -top-12 h-40 w-40 rounded-full ${channel.glow} opacity-60 blur-2xl`} />
         <div className={`absolute -bottom-14 -left-10 h-36 w-36 rounded-full ${channel.glow} opacity-50 blur-2xl`} />
-        <div className="absolute left-5 top-5 text-[10px] font-bold tracking-[0.2em] text-neutral-500/80">
+        <div className="absolute left-5 top-5 text-[10px] font-bold tracking-[0.2em] text-[#929d97]/80">
           CANAL {channel.number}
         </div>
-        <div className="relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.6rem] bg-white/85 shadow-[0_12px_35px_rgba(45,65,95,0.12)] ring-1 ring-white/90 transition-transform duration-300 group-hover:scale-110">
+        <div className="relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.6rem] bg-[#141a18]/85 shadow-[0_12px_35px_rgba(45,65,95,0.12)] ring-1 ring-[#3c4641]/90 transition-transform duration-300 group-hover:scale-110">
           <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${channel.iconColor} text-white shadow-md`}>
             <Icon className="h-6 w-6" strokeWidth={1.9} />
           </div>
         </div>
         <div className="absolute bottom-5 right-5 grid grid-cols-3 gap-1 opacity-45" aria-hidden="true">
-          <span className="h-2 w-2 rounded-[3px] bg-white" />
-          <span className="h-2 w-2 rounded-[3px] bg-white" />
-          <span className="h-2 w-2 rounded-[3px] bg-white" />
-          <span className="h-2 w-2 rounded-[3px] bg-white" />
-          <span className="h-2 w-2 rounded-[3px] bg-white" />
-          <span className="h-2 w-2 rounded-[3px] bg-white" />
+          <span className="h-2 w-2 rounded-[3px] bg-[#141a18]" />
+          <span className="h-2 w-2 rounded-[3px] bg-[#141a18]" />
+          <span className="h-2 w-2 rounded-[3px] bg-[#141a18]" />
+          <span className="h-2 w-2 rounded-[3px] bg-[#141a18]" />
+          <span className="h-2 w-2 rounded-[3px] bg-[#141a18]" />
+          <span className="h-2 w-2 rounded-[3px] bg-[#141a18]" />
         </div>
       </div>
 
       <div className="flex min-h-32 items-start justify-between gap-4 p-5">
         <div>
           <span
-            className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] ${channel.href ? 'text-sky-700' : 'text-neutral-400'}`}
+            className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.12em] ${channel.href ? 'text-[#a8c7d4]' : 'text-[#7d8983]'}`}
           >
             {channel.href ? (
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#304b39]" />
             ) : (
               <Clock3 className="h-3 w-3" />
             )}
             {channel.status}
           </span>
-          <h2 className="mt-2 text-lg font-bold tracking-tight text-slate-800">{channel.title}</h2>
-          <p className="mt-1.5 max-w-xs text-sm leading-5 text-slate-500">{channel.description}</p>
+          <h2 className="mt-2 text-lg font-bold tracking-tight text-[#d7ded9]">{channel.title}</h2>
+          <p className="mt-1.5 max-w-xs text-sm leading-5 text-[#929d97]">{channel.description}</p>
         </div>
         {channel.href && (
-          <span className="mt-5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700 transition group-hover:bg-sky-500 group-hover:text-white">
+          <span className="mt-5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#192226] text-[#a8c7d4] transition group-hover:bg-[#3a5963] group-hover:text-white">
             <ArrowUpRight className="h-4 w-4" />
           </span>
         )}
@@ -112,7 +112,7 @@ function ChannelCard({ channel }: { channel: Channel }) {
     return (
       <Link
         href={channel.href}
-        className="group overflow-hidden rounded-[1.8rem] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(49,74,100,0.07)] transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_20px_48px_rgba(49,110,150,0.14)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-300/60"
+        className="group overflow-hidden rounded-[1.8rem] border border-[#2b3430]/80 bg-[#141a18] shadow-[0_12px_40px_rgba(49,74,100,0.07)] transition duration-300 hover:-translate-y-1 hover:border-[#344951] hover:shadow-[0_20px_48px_rgba(49,110,150,0.14)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#4c6c75]/60"
       >
         {card}
       </Link>
@@ -120,7 +120,7 @@ function ChannelCard({ channel }: { channel: Channel }) {
   }
 
   return (
-    <article className="group overflow-hidden rounded-[1.8rem] border border-slate-200/70 bg-white/75 shadow-[0_12px_40px_rgba(49,74,100,0.04)]">
+    <article className="group overflow-hidden rounded-[1.8rem] border border-[#2b3430]/70 bg-[#141a18]/75 shadow-[0_12px_40px_rgba(49,74,100,0.04)]">
       {card}
     </article>
   );
@@ -128,37 +128,37 @@ function ChannelCard({ channel }: { channel: Channel }) {
 
 export default function LauncherPage() {
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f6fafc] text-slate-900">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] bg-[radial-gradient(ellipse_at_top,_#e2f6fc_0%,_#f6fafc_62%,_transparent_100%)]" />
+    <div className="min-h-screen overflow-hidden bg-[#0b0e0f] text-[#eceeea]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] bg-[radial-gradient(ellipse_at_top,_rgba(154,133,98,0.13)_0%,_rgba(11,14,15,0)_70%)]" />
       <div className="relative mx-auto max-w-6xl px-5 pb-10 pt-6 sm:px-8 sm:pt-8">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="grid h-12 w-12 grid-cols-2 gap-1.5 rounded-[1.1rem] bg-white p-2.5 shadow-sm ring-1 ring-slate-200/70">
-              <span className="rounded-[4px] bg-sky-500" />
-              <span className="rounded-[4px] bg-amber-400" />
-              <span className="rounded-[4px] bg-rose-400" />
-              <span className="rounded-[4px] bg-violet-500" />
+            <div className="grid h-12 w-12 grid-cols-2 gap-1.5 rounded-[1.1rem] bg-[#141a18] p-2.5 shadow-sm ring-1 ring-[#665b4b]/70">
+              <span className="rounded-[4px] bg-[#3a5963]" />
+              <span className="rounded-[4px] bg-[#64522f]" />
+              <span className="rounded-[4px] bg-[#513438]" />
+              <span className="rounded-[4px] bg-[#4a435c]" />
             </div>
             <div>
-              <p className="text-xl font-extrabold tracking-tight text-slate-900">MiModo</p>
-              <p className="text-xs font-medium text-slate-400">Todo a tu modo</p>
+              <p className="text-xl font-extrabold tracking-tight text-[#edf0ed]">MiModo</p>
+              <p className="text-xs font-medium text-[#7d8983]">Todo a tu modo</p>
             </div>
           </div>
-          <div className="hidden items-center gap-2 rounded-full border border-white/90 bg-white/75 px-4 py-2 text-xs font-semibold text-slate-500 shadow-sm sm:flex">
-            <Sparkles className="h-3.5 w-3.5 text-sky-500" />
+          <div className="hidden items-center gap-2 rounded-full border border-[#303936]/90 bg-[#141a18]/75 px-4 py-2 text-xs font-semibold text-[#929d97] shadow-sm sm:flex">
+            <Sparkles className="h-3.5 w-3.5 text-[#a8c7d4]" />
             TU ESPACIO PERSONAL
           </div>
         </header>
 
         <section className="mx-auto mt-14 max-w-3xl text-center sm:mt-20">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white/80 px-3.5 py-1.5 text-xs font-bold text-sky-700 shadow-sm">
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#344951] bg-[#141a18]/80 px-3.5 py-1.5 text-xs font-bold text-[#a8c7d4] shadow-sm">
             <Sparkles className="h-3.5 w-3.5" />
             BIENVENIDO A MIMODO
           </div>
-          <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-[#edf0ed] sm:text-5xl">
             ¿Qué te apetece hacer?
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-500 sm:text-lg">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#929d97] sm:text-lg">
             Elige un canal para entrar: comidas, gimnasio o biblioteca. Cada espacio, a tu modo.
           </p>
         </section>
@@ -166,10 +166,10 @@ export default function LauncherPage() {
         <section className="mx-auto mt-11 max-w-5xl sm:mt-14" aria-labelledby="channels-title">
           <div className="mb-5 flex items-end justify-between px-1">
             <div>
-              <h2 id="channels-title" className="text-sm font-bold text-slate-800">Tus canales</h2>
-              <p className="mt-1 text-xs text-slate-400">Selecciona una aplicación para abrirla</p>
+              <h2 id="channels-title" className="text-sm font-bold text-[#d7ded9]">Tus canales</h2>
+              <p className="mt-1 text-xs text-[#7d8983]">Selecciona una aplicación para abrirla</p>
             </div>
-            <span className="rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold text-slate-400 ring-1 ring-slate-200/70">
+            <span className="rounded-full bg-[#141a18]/80 px-3 py-1 text-[11px] font-semibold text-[#7d8983] ring-1 ring-[#665b4b]/70">
               {channels.filter((channel) => channel.href).length} disponibles
             </span>
           </div>
@@ -180,10 +180,10 @@ export default function LauncherPage() {
           </div>
         </section>
 
-        <footer className="mx-auto mt-12 flex max-w-5xl items-center justify-between border-t border-slate-200/70 px-1 pt-5 text-xs text-slate-400">
+        <footer className="mx-auto mt-12 flex max-w-5xl items-center justify-between border-t border-[#2b3430]/70 px-1 pt-5 text-xs text-[#7d8983]">
           <span>Un espacio para todas tus cosas.</span>
           <span className="hidden items-center gap-1.5 sm:inline-flex">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#304b39]" />
             {channels.length} canales
           </span>
         </footer>
