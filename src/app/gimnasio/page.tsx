@@ -248,7 +248,7 @@ function ExerciseEditor({
                 key={item.id}
                 type="button"
                 onClick={() => addLibraryExercise(item)}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#344951] bg-[#141a18] px-3 py-2 text-xs font-bold text-[#a8c7d4] transition hover:border-[#344951] hover:bg-[#192226]"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#344951] bg-[#191310] px-3 py-2 text-xs font-bold text-[#a8c7d4] transition hover:border-[#344951] hover:bg-[#192226]"
               >
                 <Plus className="h-3.5 w-3.5" /> {item.name}
               </button>
@@ -257,14 +257,14 @@ function ExerciseEditor({
         </div>
       )}
       {exercises.map((exercise, index) => (
-        <div key={exercise.id} className="rounded-2xl border border-[#2b3430] bg-[#1a211e]/80 p-3">
+        <div key={exercise.id} className="rounded-2xl border border-[#3b2d24] bg-[#211812] p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-bold text-[#929d97]">Ejercicio {index + 1}</span>
+            <span className="text-xs font-bold text-[#a09288]">Ejercicio {index + 1}</span>
             <button
               type="button"
               onClick={() => onChange(exercises.filter((item) => item.id !== exercise.id))}
               aria-label={`Quitar ejercicio ${index + 1}`}
-              className="flex h-8 w-8 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -273,16 +273,16 @@ function ExerciseEditor({
             value={exercise.name}
             onChange={(event) => update(exercise.id, { name: event.target.value })}
             placeholder="Ej. Sentadilla"
-            className="w-full rounded-xl border border-[#2b3430] bg-[#141a18] px-3 py-2.5 text-sm outline-none transition placeholder:text-[#7d8983] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]"
+            className="w-full rounded-xl border border-[#3b2d24] bg-[#191310] px-3 py-2.5 text-sm outline-none transition placeholder:text-[#81746a] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]"
           />
           <div className="mt-3">
-            <div className={cn('mb-1.5 grid items-center gap-2 px-1 text-[10px] font-bold uppercase tracking-wide text-[#7d8983]', gridColumns)}>
+            <div className={cn('mb-1.5 grid items-center gap-2 px-1 text-[10px] font-bold uppercase tracking-wide text-[#81746a]', gridColumns)}>
               <span>Serie</span><span>Repeticiones</span><span>Peso (kg)</span>{trackCompletion && <span>Hecha</span>}<span />
             </div>
             <div className="space-y-2">
               {getSetDetails(exercise).map((set, setIndex) => (
                 <div key={set.id} className={cn('grid items-center gap-2', gridColumns)}>
-                  <span className="text-center text-xs font-bold text-[#929d97]">{setIndex + 1}</span>
+                  <span className="text-center text-xs font-bold text-[#a09288]">{setIndex + 1}</span>
                   <label>
                     <span className="sr-only">Repeticiones de la serie {setIndex + 1} de {exercise.name || `ejercicio ${index + 1}`}</span>
                     <input
@@ -291,7 +291,7 @@ function ExerciseEditor({
                       max="1000"
                       value={set.reps}
                       onChange={(event) => updateSet(exercise.id, set.id, { reps: Number(event.target.value) || 1 })}
-                      className="w-full rounded-xl border border-[#2b3430] bg-[#141a18] px-2.5 py-2 text-sm font-medium text-[#d7ded9] outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]"
+                      className="w-full rounded-xl border border-[#3b2d24] bg-[#191310] px-2.5 py-2 text-sm font-medium text-[#ded3c9] outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]"
                     />
                   </label>
                   <label>
@@ -305,7 +305,7 @@ function ExerciseEditor({
                         weight_kg: event.target.value === '' ? undefined : Number(event.target.value),
                       })}
                       placeholder="—"
-                      className="w-full rounded-xl border border-[#2b3430] bg-[#141a18] px-2.5 py-2 text-sm font-medium text-[#d7ded9] outline-none placeholder:text-[#68746e] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]"
+                      className="w-full rounded-xl border border-[#3b2d24] bg-[#191310] px-2.5 py-2 text-sm font-medium text-[#ded3c9] outline-none placeholder:text-[#6e625a] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]"
                     />
                   </label>
                   {trackCompletion && (
@@ -316,7 +316,7 @@ function ExerciseEditor({
                       aria-pressed={Boolean(set.completed)}
                       className={cn(
                         'flex h-8 w-8 items-center justify-center rounded-lg transition',
-                        set.completed ? 'bg-[#19231d] text-[#a8c5ae]' : 'text-[#68746e] hover:bg-[#1a211e] hover:text-[#929d97]'
+                        set.completed ? 'bg-[#172431] text-[#a8c7d4]' : 'text-[#6e625a] hover:bg-[#211812] hover:text-[#a09288]'
                       )}
                     >
                       {set.completed ? <Check className="h-4 w-4" /> : <span className="h-4 w-4 rounded-full border-2 border-current" />}
@@ -327,7 +327,7 @@ function ExerciseEditor({
                     onClick={() => removeSet(exercise, set.id)}
                     disabled={getSetDetails(exercise).length === 1}
                     aria-label={`Quitar serie ${setIndex + 1} de ${exercise.name || `ejercicio ${index + 1}`}`}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-[#7d8983] transition hover:bg-[#291e1d] hover:text-[#e0aaa3] disabled:cursor-not-allowed disabled:opacity-30"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-[#81746a] transition hover:bg-[#291e1d] hover:text-[#e0aaa3] disabled:cursor-not-allowed disabled:opacity-30"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -828,15 +828,15 @@ export default function GymPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-10 pt-7 sm:px-6 sm:pt-10">
-      <Link href="/" className="inline-flex items-center gap-2 rounded-xl text-sm font-semibold text-[#929d97] transition hover:text-[#edf0ed]">
+      <Link href="/" className="inline-flex items-center gap-2 rounded-xl text-sm font-semibold text-[#a09288] transition hover:text-[#f1e8e0]">
         <ArrowLeft className="h-4 w-4" /> Todos los canales
       </Link>
 
-      <section className="relative mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#251c1b] via-[#251c1b] to-[#171e1c] p-6 text-white shadow-lg shadow-rose-900/10 sm:p-9">
-        <div className="absolute -right-10 -top-16 h-64 w-64 rounded-full bg-[#141a18]/10 blur-2xl" />
+      <section className="relative mt-5 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#261912] via-[#261912] to-[#221812] p-6 text-white shadow-lg shadow-[#80573d]/10 sm:p-9">
+        <div className="absolute -right-10 -top-16 h-64 w-64 rounded-full bg-[#191310]/10 blur-2xl" />
         <div className="relative flex flex-col justify-between gap-7 sm:flex-row sm:items-end">
           <div className="max-w-xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#141a18]/15 px-3 py-1.5 text-xs font-bold tracking-wide text-white/90">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#191310]/15 px-3 py-1.5 text-xs font-bold tracking-wide text-white/90">
               <Activity className="h-3.5 w-3.5" /> MIMODO · GIMNASIO
             </span>
             <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">Entrena a tu ritmo.</h1>
@@ -852,25 +852,25 @@ export default function GymPage() {
                 setActiveWorkoutError('');
                 setShowStartDialog(true);
               }}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#141a18] px-5 py-3 text-sm font-bold text-[#e0aaa3] shadow-sm transition hover:bg-[#291e1d] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#3c4641]/40"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#191310] px-5 py-3 text-sm font-bold text-[#e0aaa3] shadow-sm transition hover:bg-[#291e1d] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#597b96]/40"
             >
               <Play className="h-4 w-4 fill-current" /> Empezar entrenamiento
             </button>
-            <button type="button" onClick={() => openSession()} className="rounded-xl px-3 py-2 text-xs font-bold text-white/85 transition hover:bg-[#141a18]/10 hover:text-white">
+            <button type="button" onClick={() => openSession()} className="rounded-xl px-3 py-2 text-xs font-bold text-white/85 transition hover:bg-[#191310]/10 hover:text-white">
               Registrar una sesión pasada
             </button>
           </div>
         </div>
         <div className="relative mt-8 grid grid-cols-2 gap-3 sm:max-w-2xl sm:grid-cols-3">
-          <div className="rounded-2xl border border-[#303936]/15 bg-[#141a18]/10 p-4 backdrop-blur-sm">
+          <div className="rounded-2xl border border-[#3b2d24]/15 bg-[#191310]/10 p-4 backdrop-blur-sm">
             <p className="text-2xl font-extrabold">{thisWeekCount}</p>
             <p className="mt-1 text-xs font-medium text-white/75">sesiones esta semana</p>
           </div>
-          <div className="rounded-2xl border border-[#303936]/15 bg-[#141a18]/10 p-4 backdrop-blur-sm">
+          <div className="rounded-2xl border border-[#3b2d24]/15 bg-[#191310]/10 p-4 backdrop-blur-sm">
             <p className="text-2xl font-extrabold">{routines.length}</p>
             <p className="mt-1 text-xs font-medium text-white/75">rutinas guardadas</p>
           </div>
-          <div className="rounded-2xl border border-[#303936]/15 bg-[#141a18]/10 p-4 backdrop-blur-sm">
+          <div className="rounded-2xl border border-[#3b2d24]/15 bg-[#191310]/10 p-4 backdrop-blur-sm">
             <p className="text-2xl font-extrabold">{libraryExercises.length}</p>
             <p className="mt-1 text-xs font-medium text-white/75">ejercicios guardados</p>
           </div>
@@ -878,7 +878,7 @@ export default function GymPage() {
       </section>
 
       {storageIssue ? (
-        <div role="status" className="mt-5 rounded-2xl border border-[#51452f] bg-[#282319] px-4 py-3 text-sm leading-6 text-[#d5bc8c]">
+        <div role="status" className="mt-5 rounded-2xl border border-[#543c2c] bg-[#302218] px-4 py-3 text-sm leading-6 text-[#d8b192]">
           {storageIssue}
         </div>
       ) : !supabase || !user ? (
@@ -890,7 +890,7 @@ export default function GymPage() {
       ) : null}
 
       <div className="mt-8 flex items-center justify-between gap-4">
-        <div className="inline-flex rounded-2xl border border-[#2b3430] bg-[#141a18] p-1 shadow-sm" role="tablist" aria-label="Secciones de gimnasio">
+        <div className="inline-flex rounded-2xl border border-[#3b2d24] bg-[#191310] p-1 shadow-sm" role="tablist" aria-label="Secciones de gimnasio">
           {([
             ['history', 'Historial'],
             ['routines', 'Mis rutinas'],
@@ -904,7 +904,7 @@ export default function GymPage() {
               onClick={() => setTab(value)}
               className={cn(
                 'rounded-xl px-4 py-2.5 text-sm font-bold transition',
-                tab === value ? 'bg-[#222b28] text-white shadow-sm' : 'text-[#929d97] hover:bg-[#1a211e] hover:text-[#d7ded9]'
+                tab === value ? 'bg-[#80573d] text-white shadow-sm' : 'text-[#a09288] hover:bg-[#211812] hover:text-[#ded3c9]'
               )}
             >
               {label}
@@ -915,7 +915,7 @@ export default function GymPage() {
           <button
             type="button"
             onClick={() => tab === 'routines' ? openRoutine() : openLibraryExercise()}
-            className="inline-flex h-11 items-center gap-2 rounded-2xl bg-[#222b28] px-4 text-sm font-bold text-white transition hover:bg-[#303a36]"
+            className="inline-flex h-11 items-center gap-2 rounded-2xl bg-[#80573d] px-4 text-sm font-bold text-white transition hover:bg-[#93694b]"
           >
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">{tab === 'routines' ? 'Nueva rutina' : 'Nuevo ejercicio'}</span>
@@ -925,47 +925,47 @@ export default function GymPage() {
       </div>
 
       {loading || isAppLoading ? (
-        <div className="flex min-h-64 items-center justify-center text-sm font-medium text-[#929d97]">
+        <div className="flex min-h-64 items-center justify-center text-sm font-medium text-[#a09288]">
           <LoaderCircle className="mr-2 h-5 w-5 animate-spin" /> Cargando tus entrenamientos…
         </div>
       ) : tab === 'history' ? (
         <section className="mt-5 space-y-3" aria-label="Historial de entrenamientos">
           {sessions.length ? sessions.map((session) => (
-            <article key={session.id} className="rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-5 shadow-sm transition hover:border-[#503638] sm:p-6">
+            <article key={session.id} className="rounded-3xl border border-[#3b2d24]/80 bg-[#191310] p-5 shadow-sm transition hover:border-[#503638] sm:p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 items-start gap-3.5">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#291e1d] text-[#e0aaa3]">
                     <Dumbbell className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="truncate text-base font-extrabold text-[#edf0ed] sm:text-lg">{session.name}</h2>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-[#929d97]">
+                    <h2 className="truncate text-base font-extrabold text-[#f1e8e0] sm:text-lg">{session.name}</h2>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-[#a09288]">
                       <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5" />{formatDate(session.performed_on)}</span>
                       {session.duration_minutes && <span className="inline-flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5" />{session.duration_minutes} min</span>}
                     </div>
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-1">
-                  <button type="button" onClick={() => openSession(undefined, session)} aria-label="Editar entrenamiento" className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#1a211e] hover:text-[#d7ded9]"><Pencil className="h-4 w-4" /></button>
-                  <button type="button" onClick={() => removeSession(session)} aria-label="Eliminar entrenamiento" className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"><Trash2 className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => openSession(undefined, session)} aria-label="Editar entrenamiento" className="flex h-9 w-9 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#211812] hover:text-[#ded3c9]"><Pencil className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => removeSession(session)} aria-label="Eliminar entrenamiento" className="flex h-9 w-9 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"><Trash2 className="h-4 w-4" /></button>
                 </div>
               </div>
               {session.exercises.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {session.exercises.map((exercise) => (
-                    <span key={exercise.id} className="rounded-full bg-[#1a211e] px-3 py-1.5 text-xs font-semibold text-[#aab4ae]">
+                    <span key={exercise.id} className="rounded-full bg-[#211812] px-3 py-1.5 text-xs font-semibold text-[#b5a59a]">
                       {exercise.name} · {getSetDetails(exercise).map((set) => `${set.reps} rep · ${set.weight_kg != null ? `${set.weight_kg} kg` : 'sin peso'}`).join(' / ')}
                     </span>
                   ))}
                 </div>
               )}
-              {session.notes && <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[#929d97]">{session.notes}</p>}
+              {session.notes && <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[#a09288]">{session.notes}</p>}
             </article>
           )) : (
-            <div className="rounded-3xl border border-dashed border-[#2b3430] bg-[#141a18] px-5 py-12 text-center">
+            <div className="rounded-3xl border border-dashed border-[#3b2d24] bg-[#191310] px-5 py-12 text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#291e1d] text-[#e0aaa3]"><Dumbbell className="h-6 w-6" /></div>
-              <h2 className="mt-4 text-lg font-extrabold text-[#edf0ed]">Aquí aparecerán tus entrenamientos</h2>
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#929d97]">Registra tu primera sesión o crea una rutina para empezar.</p>
+              <h2 className="mt-4 text-lg font-extrabold text-[#f1e8e0]">Aquí aparecerán tus entrenamientos</h2>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#a09288]">Registra tu primera sesión o crea una rutina para empezar.</p>
               <button type="button" onClick={() => openSession()} className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#623d3e] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#623d3e]"><Plus className="h-4 w-4" /> Registrar sesión</button>
             </div>
           )}
@@ -973,81 +973,81 @@ export default function GymPage() {
       ) : tab === 'routines' ? (
         <section className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Rutinas guardadas">
           {routines.length ? routines.map((routine) => (
-            <article key={routine.id} className="flex flex-col rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-5 shadow-sm transition hover:border-[#51452f]">
+            <article key={routine.id} className="flex flex-col rounded-3xl border border-[#3b2d24]/80 bg-[#191310] p-5 shadow-sm transition hover:border-[#543c2c]">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="truncate text-lg font-extrabold text-[#edf0ed]">{routine.name}</h2>
-                  <p className="mt-1 text-xs font-semibold text-[#7d8983]">{routine.exercises.length} ejercicios</p>
+                  <h2 className="truncate text-lg font-extrabold text-[#f1e8e0]">{routine.name}</h2>
+                  <p className="mt-1 text-xs font-semibold text-[#81746a]">{routine.exercises.length} ejercicios</p>
                 </div>
                 <div className="flex shrink-0 gap-1">
-                  <button type="button" onClick={() => openRoutine(routine)} aria-label={`Editar ${routine.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#1a211e] hover:text-[#d7ded9]"><Pencil className="h-4 w-4" /></button>
-                  <button type="button" onClick={() => removeRoutine(routine)} aria-label={`Eliminar ${routine.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"><Trash2 className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => openRoutine(routine)} aria-label={`Editar ${routine.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#211812] hover:text-[#ded3c9]"><Pencil className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => removeRoutine(routine)} aria-label={`Eliminar ${routine.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"><Trash2 className="h-4 w-4" /></button>
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                {routine.exercises.slice(0, 5).map((exercise) => <span key={exercise.id} className="rounded-full bg-[#282319] px-3 py-1.5 text-xs font-semibold text-[#d5bc8c]">{exercise.name}</span>)}
-                {routine.exercises.length > 5 && <span className="px-2 py-1.5 text-xs font-semibold text-[#7d8983]">+{routine.exercises.length - 5}</span>}
+                {routine.exercises.slice(0, 5).map((exercise) => <span key={exercise.id} className="rounded-full bg-[#302218] px-3 py-1.5 text-xs font-semibold text-[#d8b192]">{exercise.name}</span>)}
+                {routine.exercises.length > 5 && <span className="px-2 py-1.5 text-xs font-semibold text-[#81746a]">+{routine.exercises.length - 5}</span>}
               </div>
-              {routine.notes && <p className="mt-3 line-clamp-2 text-sm leading-5 text-[#929d97]">{routine.notes}</p>}
+              {routine.notes && <p className="mt-3 line-clamp-2 text-sm leading-5 text-[#a09288]">{routine.notes}</p>}
               <button type="button" onClick={() => beginWorkout(routine)} className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#291e1d] px-4 text-sm font-bold text-[#e0aaa3] transition hover:bg-[#291e1d]"><Activity className="h-4 w-4" /> Empezar esta rutina</button>
             </article>
           )) : (
-            <div className="rounded-3xl border border-dashed border-[#2b3430] bg-[#141a18] px-5 py-12 text-center sm:col-span-2">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#282319] text-[#d5bc8c]"><Sparkles className="h-6 w-6" /></div>
-              <h2 className="mt-4 text-lg font-extrabold text-[#edf0ed]">Crea tu primera rutina</h2>
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#929d97]">Guarda tus ejercicios habituales para volver a usarlos en cada entrenamiento.</p>
-              <button type="button" onClick={() => openRoutine()} className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#222b28] px-4 py-2.5 text-sm font-bold text-white"><Plus className="h-4 w-4" /> Nueva rutina</button>
+            <div className="rounded-3xl border border-dashed border-[#3b2d24] bg-[#191310] px-5 py-12 text-center sm:col-span-2">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#302218] text-[#d8b192]"><Sparkles className="h-6 w-6" /></div>
+              <h2 className="mt-4 text-lg font-extrabold text-[#f1e8e0]">Crea tu primera rutina</h2>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#a09288]">Guarda tus ejercicios habituales para volver a usarlos en cada entrenamiento.</p>
+              <button type="button" onClick={() => openRoutine()} className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#80573d] px-4 py-2.5 text-sm font-bold text-white"><Plus className="h-4 w-4" /> Nueva rutina</button>
             </div>
           )}
         </section>
       ) : (
         <section className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Biblioteca de ejercicios">
           {libraryExercises.length ? libraryExercises.map((exercise) => (
-            <article key={exercise.id} className="rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-5 shadow-sm transition hover:border-[#344951]">
+            <article key={exercise.id} className="rounded-3xl border border-[#3b2d24]/80 bg-[#191310] p-5 shadow-sm transition hover:border-[#344951]">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="truncate text-lg font-extrabold text-[#edf0ed]">{exercise.name}</h2>
+                  <h2 className="truncate text-lg font-extrabold text-[#f1e8e0]">{exercise.name}</h2>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {exercise.muscle_group && <span className="rounded-full bg-[#192226] px-3 py-1 text-xs font-semibold text-[#a8c7d4]">{exercise.muscle_group}</span>}
-                    {exercise.equipment && <span className="rounded-full bg-[#1a211e] px-3 py-1 text-xs font-semibold text-[#aab4ae]">{exercise.equipment}</span>}
+                    {exercise.equipment && <span className="rounded-full bg-[#211812] px-3 py-1 text-xs font-semibold text-[#b5a59a]">{exercise.equipment}</span>}
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-1">
-                  <button type="button" onClick={() => openLibraryExercise(exercise)} aria-label={`Editar ${exercise.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#1a211e] hover:text-[#d7ded9]"><Pencil className="h-4 w-4" /></button>
-                  <button type="button" onClick={() => removeLibraryExercise(exercise)} aria-label={`Eliminar ${exercise.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#7d8983] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"><Trash2 className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => openLibraryExercise(exercise)} aria-label={`Editar ${exercise.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#211812] hover:text-[#ded3c9]"><Pencil className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => removeLibraryExercise(exercise)} aria-label={`Eliminar ${exercise.name}`} className="flex h-9 w-9 items-center justify-center rounded-xl text-[#81746a] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]"><Trash2 className="h-4 w-4" /></button>
                 </div>
               </div>
-              <p className="mt-4 text-sm font-bold text-[#c2cbc5]">
+              <p className="mt-4 text-sm font-bold text-[#c7b8ad]">
                 {exercise.default_sets} series × {exercise.default_reps} repeticiones
                 {exercise.default_weight_kg != null ? ` · ${exercise.default_weight_kg} kg` : ''}
               </p>
-              {exercise.notes && <p className="mt-2 whitespace-pre-wrap text-sm leading-5 text-[#929d97]">{exercise.notes}</p>}
+              {exercise.notes && <p className="mt-2 whitespace-pre-wrap text-sm leading-5 text-[#a09288]">{exercise.notes}</p>}
             </article>
           )) : (
-            <div className="rounded-3xl border border-dashed border-[#2b3430] bg-[#141a18] px-5 py-12 text-center sm:col-span-2">
+            <div className="rounded-3xl border border-dashed border-[#3b2d24] bg-[#191310] px-5 py-12 text-center sm:col-span-2">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#192226] text-[#a8c7d4]"><Dumbbell className="h-6 w-6" /></div>
-              <h2 className="mt-4 text-lg font-extrabold text-[#edf0ed]">Crea tu biblioteca de ejercicios</h2>
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#929d97]">Guarda tus ejercicios con sus series y repeticiones habituales, y añádelos a las rutinas con un toque.</p>
-              <button type="button" onClick={() => openLibraryExercise()} className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#222b28] px-4 py-2.5 text-sm font-bold text-white"><Plus className="h-4 w-4" /> Nuevo ejercicio</button>
+              <h2 className="mt-4 text-lg font-extrabold text-[#f1e8e0]">Crea tu biblioteca de ejercicios</h2>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#a09288]">Guarda tus ejercicios con sus series y repeticiones habituales, y añádelos a las rutinas con un toque.</p>
+              <button type="button" onClick={() => openLibraryExercise()} className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#80573d] px-4 py-2.5 text-sm font-bold text-white"><Plus className="h-4 w-4" /> Nuevo ejercicio</button>
             </div>
           )}
         </section>
       )}
 
       {showStartDialog && !currentActiveWorkout && (
-        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-[#222b28]/45 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowStartDialog(false); }}>
-          <section role="dialog" aria-modal="true" aria-labelledby="start-workout-title" className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-[2rem] bg-[#141a18] p-5 shadow-2xl sm:rounded-[2rem] sm:p-7">
+        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-[#080604]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowStartDialog(false); }}>
+          <section role="dialog" aria-modal="true" aria-labelledby="start-workout-title" className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-[2rem] bg-[#191310] p-5 shadow-2xl sm:rounded-[2rem] sm:p-7">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#e0aaa3]">MiModo · Gimnasio</p>
-                <h2 id="start-workout-title" className="mt-1 text-xl font-extrabold text-[#edf0ed]">Empezar entrenamiento</h2>
-                <p className="mt-1 text-sm text-[#929d97]">El cronómetro empieza al elegir una opción.</p>
+                <h2 id="start-workout-title" className="mt-1 text-xl font-extrabold text-[#f1e8e0]">Empezar entrenamiento</h2>
+                <p className="mt-1 text-sm text-[#a09288]">El cronómetro empieza al elegir una opción.</p>
               </div>
-              <button type="button" onClick={() => setShowStartDialog(false)} aria-label="Cerrar" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#1a211e] text-[#929d97] transition hover:bg-[#1a211e]"><X className="h-5 w-5" /></button>
+              <button type="button" onClick={() => setShowStartDialog(false)} aria-label="Cerrar" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#211812] text-[#a09288] transition hover:bg-[#211812]"><X className="h-5 w-5" /></button>
             </div>
 
-            <label className="block text-sm font-bold text-[#c2cbc5]">Nombre del entrenamiento
-              <input value={startWorkoutName} onChange={(event) => setStartWorkoutName(event.target.value)} placeholder="Ej. Tren superior" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+            <label className="block text-sm font-bold text-[#c7b8ad]">Nombre del entrenamiento
+              <input value={startWorkoutName} onChange={(event) => setStartWorkoutName(event.target.value)} placeholder="Ej. Tren superior" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
             </label>
             <button type="button" onClick={() => beginWorkout()} className="mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#623d3e] px-4 text-sm font-bold text-white transition hover:bg-[#623d3e]">
               <Play className="h-4 w-4 fill-current" /> Empezar en blanco
@@ -1055,13 +1055,13 @@ export default function GymPage() {
 
             {routines.length > 0 && (
               <div className="mt-6">
-                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#7d8983]">O empezar con una rutina</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#81746a]">O empezar con una rutina</p>
                 <div className="space-y-2">
                   {routines.map((routine) => (
-                    <button key={routine.id} type="button" onClick={() => beginWorkout(routine)} className="flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border border-[#2b3430] px-4 py-3 text-left transition hover:border-[#503638] hover:bg-[#291e1d]/50">
+                    <button key={routine.id} type="button" onClick={() => beginWorkout(routine)} className="flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border border-[#3b2d24] px-4 py-3 text-left transition hover:border-[#503638] hover:bg-[#291e1d]/50">
                       <span className="min-w-0">
-                        <span className="block truncate text-sm font-bold text-[#d7ded9]">{routine.name}</span>
-                        <span className="mt-0.5 block text-xs text-[#7d8983]">{routine.exercises.length} ejercicios</span>
+                        <span className="block truncate text-sm font-bold text-[#ded3c9]">{routine.name}</span>
+                        <span className="mt-0.5 block text-xs text-[#81746a]">{routine.exercises.length} ejercicios</span>
                       </span>
                       <Play className="h-4 w-4 shrink-0 text-[#e0aaa3]" />
                     </button>
@@ -1074,24 +1074,24 @@ export default function GymPage() {
       )}
 
       {currentActiveWorkout && (
-        <div className="fixed inset-0 z-[100] overflow-y-auto bg-[#0b0e0f] text-[#edf0ed]">
+        <div className="fixed inset-0 z-[100] overflow-y-auto bg-[#100c0a] text-[#f1e8e0]">
           <main className="mx-auto max-w-3xl px-4 pb-8 pt-4 sm:px-6 sm:pt-7">
-            <header className="sticky top-0 z-10 -mx-4 mb-5 flex items-center justify-between border-b border-[#2b3430]/80 bg-[#111615]/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+            <header className="sticky top-0 z-10 -mx-4 mb-5 flex items-center justify-between border-b border-[#3b2d24]/80 bg-[#17110e]/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#e0aaa3]">Entrenamiento en curso</p>
-                <p className="mt-0.5 font-mono text-xl font-extrabold tabular-nums text-[#edf0ed]" aria-live="off">{formatElapsed(elapsedSeconds)}</p>
+                <p className="mt-0.5 font-mono text-xl font-extrabold tabular-nums text-[#f1e8e0]" aria-live="off">{formatElapsed(elapsedSeconds)}</p>
               </div>
-              <button type="button" onClick={discardWorkout} className="rounded-xl px-3 py-2 text-sm font-bold text-[#929d97] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]">Descartar</button>
+              <button type="button" onClick={discardWorkout} className="rounded-xl px-3 py-2 text-sm font-bold text-[#a09288] transition hover:bg-[#291e1d] hover:text-[#e0aaa3]">Descartar</button>
             </header>
 
-            <section className="rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-5 shadow-sm sm:p-6">
-              <label className="block text-sm font-bold text-[#c2cbc5]">Nombre del entrenamiento
-                <input value={currentActiveWorkout.name} onChange={(event) => updateActiveWorkout({ name: event.target.value })} className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-4 py-3 text-lg font-extrabold outline-none focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+            <section className="rounded-3xl border border-[#3b2d24]/80 bg-[#191310] p-5 shadow-sm sm:p-6">
+              <label className="block text-sm font-bold text-[#c7b8ad]">Nombre del entrenamiento
+                <input value={currentActiveWorkout.name} onChange={(event) => updateActiveWorkout({ name: event.target.value })} className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-4 py-3 text-lg font-extrabold outline-none focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
               </label>
               <div className="mt-5 flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-base font-extrabold text-[#edf0ed]">Ejercicios y series</h2>
-                  <p className="mt-1 text-xs text-[#929d97]">Apunta cada serie y márcala al terminarla.</p>
+                  <h2 className="text-base font-extrabold text-[#f1e8e0]">Ejercicios y series</h2>
+                  <p className="mt-1 text-xs text-[#a09288]">Apunta cada serie y márcala al terminarla.</p>
                 </div>
                 <span className="rounded-full bg-[#291e1d] px-3 py-1.5 text-xs font-bold text-[#e0aaa3]">{currentActiveWorkout.exercises.length} ejercicios</span>
               </div>
@@ -1103,14 +1103,14 @@ export default function GymPage() {
                   trackCompletion
                 />
               </div>
-              <label className="mt-5 block text-sm font-bold text-[#c2cbc5]">Notas <span className="font-normal text-[#7d8983]">(opcional)</span>
-                <textarea value={currentActiveWorkout.notes} onChange={(event) => updateActiveWorkout({ notes: event.target.value })} rows={2} placeholder="Sensaciones, pausas o recordatorios" className="mt-1.5 w-full resize-y rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+              <label className="mt-5 block text-sm font-bold text-[#c7b8ad]">Notas <span className="font-normal text-[#81746a]">(opcional)</span>
+                <textarea value={currentActiveWorkout.notes} onChange={(event) => updateActiveWorkout({ notes: event.target.value })} rows={2} placeholder="Sensaciones, pausas o recordatorios" className="mt-1.5 w-full resize-y rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
               </label>
             </section>
 
             {activeWorkoutError && <p role="alert" className="mt-4 rounded-2xl border border-[#503638] bg-[#291e1d] px-4 py-3 text-sm font-semibold text-[#e0aaa3]">{activeWorkoutError}</p>}
-            <div className="sticky bottom-2 mt-4 rounded-2xl border border-[#2b3430]/80 bg-[#141a18]/95 p-2 shadow-lg backdrop-blur">
-              <button type="button" onClick={() => void finishWorkout()} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#385440] px-4 text-sm font-extrabold text-white transition hover:bg-[#385440]">
+            <div className="sticky bottom-2 mt-4 rounded-2xl border border-[#3b2d24]/80 bg-[#191310]/95 p-2 shadow-lg backdrop-blur">
+              <button type="button" onClick={() => void finishWorkout()} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#80573d] px-4 text-sm font-extrabold text-white transition hover:bg-[#80573d]">
                 <Check className="h-4 w-4" /> Terminar y guardar entrenamiento
               </button>
             </div>
@@ -1119,12 +1119,12 @@ export default function GymPage() {
       )}
 
       {dialog && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-[#222b28]/45 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}>
-          <section role="dialog" aria-modal="true" aria-labelledby="gym-dialog-title" className="max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-[2rem] bg-[#141a18] p-5 shadow-2xl sm:rounded-[2rem] sm:p-7">
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-[#080604]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}>
+          <section role="dialog" aria-modal="true" aria-labelledby="gym-dialog-title" className="max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-[2rem] bg-[#191310] p-5 shadow-2xl sm:rounded-[2rem] sm:p-7">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#e0aaa3]">MiModo · Gimnasio</p>
-                <h2 id="gym-dialog-title" className="mt-1 text-xl font-extrabold text-[#edf0ed]">
+                <h2 id="gym-dialog-title" className="mt-1 text-xl font-extrabold text-[#f1e8e0]">
                   {dialog === 'routine'
                     ? (editingRoutine ? 'Editar rutina' : 'Nueva rutina')
                     : dialog === 'exercise'
@@ -1132,19 +1132,19 @@ export default function GymPage() {
                       : (editingSession ? 'Editar entrenamiento' : 'Registrar entrenamiento')}
                 </h2>
               </div>
-              <button type="button" onClick={() => setDialog(null)} aria-label="Cerrar" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#1a211e] text-[#929d97] transition hover:bg-[#1a211e]"><X className="h-5 w-5" /></button>
+              <button type="button" onClick={() => setDialog(null)} aria-label="Cerrar" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#211812] text-[#a09288] transition hover:bg-[#211812]"><X className="h-5 w-5" /></button>
             </div>
 
             {dialog === 'routine' ? (
               <form onSubmit={submitRoutine} className="space-y-4">
-                <label className="block text-sm font-bold text-[#c2cbc5]">Nombre de la rutina
-                  <input value={routineName} onChange={(event) => setRoutineName(event.target.value)} placeholder="Ej. Tren superior" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+                <label className="block text-sm font-bold text-[#c7b8ad]">Nombre de la rutina
+                  <input value={routineName} onChange={(event) => setRoutineName(event.target.value)} placeholder="Ej. Tren superior" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
                 </label>
-                <label className="block text-sm font-bold text-[#c2cbc5]">Notas <span className="font-normal text-[#7d8983]">(opcional)</span>
-                  <textarea value={routineNotes} onChange={(event) => setRoutineNotes(event.target.value)} rows={2} placeholder="Días, objetivos o recordatorios" className="mt-1.5 w-full resize-y rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+                <label className="block text-sm font-bold text-[#c7b8ad]">Notas <span className="font-normal text-[#81746a]">(opcional)</span>
+                  <textarea value={routineNotes} onChange={(event) => setRoutineNotes(event.target.value)} rows={2} placeholder="Días, objetivos o recordatorios" className="mt-1.5 w-full resize-y rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
                 </label>
                 <div>
-                  <p className="mb-2 text-sm font-bold text-[#c2cbc5]">Ejercicios</p>
+                  <p className="mb-2 text-sm font-bold text-[#c7b8ad]">Ejercicios</p>
                   <ExerciseEditor exercises={routineExercises} onChange={setRoutineExercises} libraryExercises={libraryExercises} />
                 </div>
                 {formError && <p role="alert" className="rounded-xl bg-[#291e1d] px-3 py-2 text-sm font-medium text-[#e0aaa3]">{formError}</p>}
@@ -1154,36 +1154,36 @@ export default function GymPage() {
               </form>
             ) : dialog === 'exercise' ? (
               <form onSubmit={submitLibraryExercise} className="space-y-4">
-                <label className="block text-sm font-bold text-[#c2cbc5]">Nombre del ejercicio
-                  <input value={libraryDraft.name} onChange={(event) => setLibraryDraft((current) => ({ ...current, name: event.target.value }))} placeholder="Ej. Press de banca" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#7d8983] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
+                <label className="block text-sm font-bold text-[#c7b8ad]">Nombre del ejercicio
+                  <input value={libraryDraft.name} onChange={(event) => setLibraryDraft((current) => ({ ...current, name: event.target.value }))} placeholder="Ej. Press de banca" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#81746a] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  <label className="block text-sm font-bold text-[#c2cbc5]">Grupo muscular
-                    <select value={libraryDraft.muscle_group} onChange={(event) => setLibraryDraft((current) => ({ ...current, muscle_group: event.target.value }))} className="mt-1.5 w-full rounded-2xl border border-[#2b3430] bg-[#141a18] px-3 py-3 text-sm font-medium outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]">
+                  <label className="block text-sm font-bold text-[#c7b8ad]">Grupo muscular
+                    <select value={libraryDraft.muscle_group} onChange={(event) => setLibraryDraft((current) => ({ ...current, muscle_group: event.target.value }))} className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] bg-[#191310] px-3 py-3 text-sm font-medium outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]">
                       <option value="">Sin especificar</option>
                       {['Pecho', 'Espalda', 'Hombros', 'Brazos', 'Piernas', 'Glúteos', 'Core', 'Cardio', 'Cuerpo completo', 'Otro'].map((group) => <option key={group} value={group}>{group}</option>)}
                     </select>
                   </label>
-                  <label className="block text-sm font-bold text-[#c2cbc5]">Material <span className="font-normal text-[#7d8983]">(opcional)</span>
-                    <input value={libraryDraft.equipment} onChange={(event) => setLibraryDraft((current) => ({ ...current, equipment: event.target.value }))} placeholder="Ej. Mancuernas" className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-3 py-3 text-sm font-medium outline-none placeholder:text-[#7d8983] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
+                  <label className="block text-sm font-bold text-[#c7b8ad]">Material <span className="font-normal text-[#81746a]">(opcional)</span>
+                    <input value={libraryDraft.equipment} onChange={(event) => setLibraryDraft((current) => ({ ...current, equipment: event.target.value }))} placeholder="Ej. Mancuernas" className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-3 py-3 text-sm font-medium outline-none placeholder:text-[#81746a] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
                   </label>
                 </div>
                 <div>
-                  <p className="mb-2 text-sm font-bold text-[#c2cbc5]">Valores iniciales <span className="font-normal text-[#7d8983]">(puedes cambiarlos al entrenar)</span></p>
+                  <p className="mb-2 text-sm font-bold text-[#c7b8ad]">Valores iniciales <span className="font-normal text-[#81746a]">(puedes cambiarlos al entrenar)</span></p>
                   <div className="grid grid-cols-3 gap-2">
-                    <label className="text-[11px] font-semibold text-[#929d97]">Series
-                      <input type="number" min="1" max="30" value={libraryDraft.default_sets} onChange={(event) => setLibraryDraft((current) => ({ ...current, default_sets: event.target.value }))} className="mt-1 w-full rounded-xl border border-[#2b3430] px-3 py-2.5 text-sm font-medium text-[#d7ded9] outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
+                    <label className="text-[11px] font-semibold text-[#a09288]">Series
+                      <input type="number" min="1" max="30" value={libraryDraft.default_sets} onChange={(event) => setLibraryDraft((current) => ({ ...current, default_sets: event.target.value }))} className="mt-1 w-full rounded-xl border border-[#3b2d24] px-3 py-2.5 text-sm font-medium text-[#ded3c9] outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
                     </label>
-                    <label className="text-[11px] font-semibold text-[#929d97]">Repeticiones
-                      <input type="number" min="1" max="1000" value={libraryDraft.default_reps} onChange={(event) => setLibraryDraft((current) => ({ ...current, default_reps: event.target.value }))} className="mt-1 w-full rounded-xl border border-[#2b3430] px-3 py-2.5 text-sm font-medium text-[#d7ded9] outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
+                    <label className="text-[11px] font-semibold text-[#a09288]">Repeticiones
+                      <input type="number" min="1" max="1000" value={libraryDraft.default_reps} onChange={(event) => setLibraryDraft((current) => ({ ...current, default_reps: event.target.value }))} className="mt-1 w-full rounded-xl border border-[#3b2d24] px-3 py-2.5 text-sm font-medium text-[#ded3c9] outline-none focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
                     </label>
-                    <label className="text-[11px] font-semibold text-[#929d97]">Peso (kg)
-                      <input type="number" min="0" step="0.5" value={libraryDraft.default_weight_kg} onChange={(event) => setLibraryDraft((current) => ({ ...current, default_weight_kg: event.target.value }))} placeholder="—" className="mt-1 w-full rounded-xl border border-[#2b3430] px-3 py-2.5 text-sm font-medium text-[#d7ded9] outline-none placeholder:text-[#68746e] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
+                    <label className="text-[11px] font-semibold text-[#a09288]">Peso (kg)
+                      <input type="number" min="0" step="0.5" value={libraryDraft.default_weight_kg} onChange={(event) => setLibraryDraft((current) => ({ ...current, default_weight_kg: event.target.value }))} placeholder="—" className="mt-1 w-full rounded-xl border border-[#3b2d24] px-3 py-2.5 text-sm font-medium text-[#ded3c9] outline-none placeholder:text-[#6e625a] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
                     </label>
                   </div>
                 </div>
-                <label className="block text-sm font-bold text-[#c2cbc5]">Notas <span className="font-normal text-[#7d8983]">(opcional)</span>
-                  <textarea value={libraryDraft.notes} onChange={(event) => setLibraryDraft((current) => ({ ...current, notes: event.target.value }))} rows={2} placeholder="Técnica o recordatorios" className="mt-1.5 w-full resize-y rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#7d8983] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
+                <label className="block text-sm font-bold text-[#c7b8ad]">Notas <span className="font-normal text-[#81746a]">(opcional)</span>
+                  <textarea value={libraryDraft.notes} onChange={(event) => setLibraryDraft((current) => ({ ...current, notes: event.target.value }))} rows={2} placeholder="Técnica o recordatorios" className="mt-1.5 w-full resize-y rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#81746a] focus:border-[#344951] focus:ring-4 focus:ring-[#4c6c75]" />
                 </label>
                 {formError && <p role="alert" className="rounded-xl bg-[#291e1d] px-3 py-2 text-sm font-medium text-[#e0aaa3]">{formError}</p>}
                 <button type="submit" disabled={saving} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#3a5963] px-4 text-sm font-bold text-white transition hover:bg-[#3a5963] disabled:opacity-60">
@@ -1193,7 +1193,7 @@ export default function GymPage() {
             ) : (
               <form onSubmit={submitSession} className="space-y-4">
                 {routines.length > 0 && (
-                  <label className="block text-sm font-bold text-[#c2cbc5]">Partir de una rutina <span className="font-normal text-[#7d8983]">(opcional)</span>
+                  <label className="block text-sm font-bold text-[#c7b8ad]">Partir de una rutina <span className="font-normal text-[#81746a]">(opcional)</span>
                     <select value={sessionDraft.routine_id || ''} onChange={(event) => {
                       const routine = routines.find((item) => item.id === event.target.value);
                       setSessionDraft((current) => routine ? {
@@ -1202,29 +1202,29 @@ export default function GymPage() {
                         routine_id: routine.id,
                         exercises: routine.exercises.map((exercise) => ({ ...exercise, id: crypto.randomUUID() })),
                       } : { ...current, routine_id: undefined });
-                    }} className="mt-1.5 w-full rounded-2xl border border-[#2b3430] bg-[#141a18] px-4 py-3 text-sm font-medium outline-none focus:border-[#503638] focus:ring-4 focus:ring-[#805153]">
+                    }} className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] bg-[#191310] px-4 py-3 text-sm font-medium outline-none focus:border-[#503638] focus:ring-4 focus:ring-[#805153]">
                       <option value="">Entrenamiento libre</option>
                       {routines.map((routine) => <option key={routine.id} value={routine.id}>{routine.name}</option>)}
                     </select>
                   </label>
                 )}
-                <label className="block text-sm font-bold text-[#c2cbc5]">Nombre
-                  <input value={sessionDraft.name} onChange={(event) => setSessionDraft((current) => ({ ...current, name: event.target.value }))} placeholder="Ej. Pierna y core" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+                <label className="block text-sm font-bold text-[#c7b8ad]">Nombre
+                  <input value={sessionDraft.name} onChange={(event) => setSessionDraft((current) => ({ ...current, name: event.target.value }))} placeholder="Ej. Pierna y core" autoFocus className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none transition placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  <label className="block text-sm font-bold text-[#c2cbc5]">Fecha
-                    <input type="date" value={sessionDraft.performed_on} onChange={(event) => setSessionDraft((current) => ({ ...current, performed_on: event.target.value }))} className="mt-1.5 w-full rounded-2xl border border-[#2b3430] bg-[#141a18] px-3 py-3 text-sm font-medium outline-none focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+                  <label className="block text-sm font-bold text-[#c7b8ad]">Fecha
+                    <input type="date" value={sessionDraft.performed_on} onChange={(event) => setSessionDraft((current) => ({ ...current, performed_on: event.target.value }))} className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] bg-[#191310] px-3 py-3 text-sm font-medium outline-none focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
                   </label>
-                  <label className="block text-sm font-bold text-[#c2cbc5]">Duración (min)
-                    <input type="number" min="1" max="1440" value={sessionDraft.duration_minutes} onChange={(event) => setSessionDraft((current) => ({ ...current, duration_minutes: event.target.value }))} placeholder="Ej. 50" className="mt-1.5 w-full rounded-2xl border border-[#2b3430] px-3 py-3 text-sm font-medium outline-none placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+                  <label className="block text-sm font-bold text-[#c7b8ad]">Duración (min)
+                    <input type="number" min="1" max="1440" value={sessionDraft.duration_minutes} onChange={(event) => setSessionDraft((current) => ({ ...current, duration_minutes: event.target.value }))} placeholder="Ej. 50" className="mt-1.5 w-full rounded-2xl border border-[#3b2d24] px-3 py-3 text-sm font-medium outline-none placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
                   </label>
                 </div>
                 <div>
-                  <p className="mb-2 text-sm font-bold text-[#c2cbc5]">Ejercicios <span className="font-normal text-[#7d8983]">(opcional)</span></p>
+                  <p className="mb-2 text-sm font-bold text-[#c7b8ad]">Ejercicios <span className="font-normal text-[#81746a]">(opcional)</span></p>
                   <ExerciseEditor exercises={sessionDraft.exercises} onChange={(exercises) => setSessionDraft((current) => ({ ...current, exercises }))} libraryExercises={libraryExercises} />
                 </div>
-                <label className="block text-sm font-bold text-[#c2cbc5]">Notas <span className="font-normal text-[#7d8983]">(opcional)</span>
-                  <textarea value={sessionDraft.notes} onChange={(event) => setSessionDraft((current) => ({ ...current, notes: event.target.value }))} rows={2} placeholder="¿Cómo fue el entrenamiento?" className="mt-1.5 w-full resize-y rounded-2xl border border-[#2b3430] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#7d8983] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
+                <label className="block text-sm font-bold text-[#c7b8ad]">Notas <span className="font-normal text-[#81746a]">(opcional)</span>
+                  <textarea value={sessionDraft.notes} onChange={(event) => setSessionDraft((current) => ({ ...current, notes: event.target.value }))} rows={2} placeholder="¿Cómo fue el entrenamiento?" className="mt-1.5 w-full resize-y rounded-2xl border border-[#3b2d24] px-4 py-3 text-sm font-medium outline-none placeholder:text-[#81746a] focus:border-[#503638] focus:ring-4 focus:ring-[#805153]" />
                 </label>
                 {formError && <p role="alert" className="rounded-xl bg-[#291e1d] px-3 py-2 text-sm font-medium text-[#e0aaa3]">{formError}</p>}
                 <button type="submit" disabled={saving} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#623d3e] px-4 text-sm font-bold text-white transition hover:bg-[#623d3e] disabled:opacity-60">

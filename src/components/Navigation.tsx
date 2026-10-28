@@ -23,7 +23,6 @@ import { cn } from '@/lib/utils';
 export function Navigation() {
   const pathname = usePathname();
   const { user, logout, isSupabaseConnected, isRealtimeActive, shoppingItems } = useApp();
-  const isLibrary = pathname.startsWith('/biblioteca');
 
   // Elementos pendientes por comprar
   const pendingCount = shoppingItems.filter((i) => !i.is_bought).length;
@@ -60,19 +59,19 @@ export function Navigation() {
   return (
     <>
       {/* 1. CABECERA SUPERIOR (Desktop y Tablet) */}
-      <header className="sticky top-0 z-40 w-full border-b border-[#222928] bg-[#0b0e0f]/90 text-[#eceeea] backdrop-blur-md transition-all">
+      <header className="sticky top-0 z-40 w-full border-b border-[#3b2d24] bg-[#100c0a]/90 text-[#f1e8e0] backdrop-blur-md transition-all">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           
           {/* Logo y Nombre */}
           <Link href="/" className="flex items-center gap-2.5 transition-transform hover:scale-[1.02]">
-            <div className={cn('flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-md', isLibrary ? 'bg-[#d5c39c] text-[#171a19] shadow-[#d5c39c]/10' : 'bg-[#3a5963] shadow-sky-500/20')}>
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#80573d] text-white shadow-md shadow-[#80573d]/20">
               <LayoutDashboard className="h-5 w-5" />
             </div>
             <div>
-              <span className="text-lg font-bold tracking-tight text-[#eceeea]">
-                Mi<span className={isLibrary ? 'text-[#d5c39c]' : 'text-[#a8c7d4]'}>Modo</span>
+              <span className="text-lg font-bold tracking-tight text-[#f1e8e0]">
+                Mi<span className="text-[#a8c7d4]">Modo</span>
               </span>
-              <p className="hidden text-[11px] font-medium text-[#79827e] sm:block">
+              <p className="hidden text-[11px] font-medium text-[#81746a] sm:block">
                 Tu espacio personal
               </p>
             </div>
@@ -90,19 +89,19 @@ export function Navigation() {
                   className={cn(
                     'relative flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? isLibrary ? 'bg-[#d5c39c] text-[#171a19] shadow-sm' : 'bg-[#b9c5a6] text-[#171a19] shadow-sm'
-                      : 'text-[#aab2ae] hover:bg-white/5 hover:text-[#eceeea]'
+                      ? 'bg-[#b78d6d] text-[#171a19] shadow-sm'
+                      : 'text-[#b5a59a] hover:bg-white/5 hover:text-[#f1e8e0]'
                   )}
                 >
-                  <Icon className={cn('h-4 w-4', isActive ? 'text-[#171a19]' : 'text-[#79827e]')} />
+                  <Icon className={cn('h-4 w-4', isActive ? 'text-[#171a19]' : 'text-[#81746a]')} />
                   <span>{item.label}</span>
                   {item.badge !== null && (
                     <span
                       className={cn(
                         'flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-bold',
                         isActive
-                          ? 'bg-[#304b39] text-white'
-                          : 'bg-[#19231d] text-[#a8c5ae]'
+                          ? 'bg-[#80573d] text-white'
+                          : 'bg-[#172431] text-[#a8c7d4]'
                       )}
                     >
                       {item.badge}
@@ -127,17 +126,17 @@ export function Navigation() {
               className={cn(
                 'hidden sm:flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border transition-colors',
                 isRealtimeActive
-                  ? 'bg-[#1b211c] text-[#a8c2a5] border-[#405141]'
+                  ? 'bg-[#172431] text-[#a8c7d4] border-[#344c61]'
                   : isSupabaseConnected
                   ? 'bg-[#172124] text-[#a8c7d4] border-[#30454a]'
-                  : 'bg-[#211b15] text-[#d7bc8d] border-[#544633]'
+                  : 'bg-[#2a1e17] text-[#d8b192] border-[#544633]'
               )}
             >
               {isRealtimeActive ? (
                 <>
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#304b39] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#304b39]"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#a8c7d4] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#a8c7d4]"></span>
                   </span>
                   <span>En directo (WebSockets)</span>
                 </>
@@ -159,15 +158,15 @@ export function Navigation() {
                 <div className="flex items-center gap-2">
                   <div
                     title={user.email}
-                    className={cn('flex h-8 w-8 items-center justify-center rounded-2xl text-xs font-bold uppercase shadow-xs', isLibrary ? 'bg-[#242b29] text-[#d5c39c]' : 'bg-[#242b29] text-[#b9c5a6]')}
+                    className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#172431] text-xs font-bold uppercase text-[#a8c7d4] shadow-xs"
                   >
                     {user.email.charAt(0)}
                   </div>
                   <div className="hidden flex-col sm:flex">
-                    <span className="max-w-[130px] truncate text-xs font-semibold text-[#d8ddda]">
+                    <span className="max-w-[130px] truncate text-xs font-semibold text-[#ded3c9]">
                       {user.email.split('@')[0]}
                     </span>
-                    <span className="text-[10px] text-[#79827e]">
+                    <span className="text-[10px] text-[#81746a]">
                       {isSupabaseConnected ? 'Conectado' : 'Sesión demo'}
                     </span>
                   </div>
@@ -175,7 +174,7 @@ export function Navigation() {
                 <button
                   onClick={() => logout()}
                   title="Cerrar sesión"
-                  className="flex h-8 w-8 items-center justify-center rounded-2xl border border-[#303937] text-[#79827e] transition-colors hover:border-[#583936] hover:bg-[#301e1c] hover:text-[#e8a69e]"
+                  className="flex h-8 w-8 items-center justify-center rounded-2xl border border-[#3b2d24] text-[#81746a] transition-colors hover:border-[#583936] hover:bg-[#301e1c] hover:text-[#e8a69e]"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                 </button>
@@ -183,7 +182,7 @@ export function Navigation() {
             ) : (
               <Link
                 href="/login"
-                className={cn('flex items-center gap-1.5 rounded-2xl px-3.5 py-1.5 text-xs font-bold shadow-sm transition-all', isLibrary ? 'bg-[#d5c39c] text-[#171a19] hover:bg-[#e2d2af]' : 'bg-[#b9c5a6] text-[#171a19] hover:bg-[#c8d1b9]')}
+                className="flex items-center gap-1.5 rounded-2xl bg-[#b78d6d] px-3.5 py-1.5 text-xs font-bold text-[#171a19] shadow-sm transition-all hover:bg-[#c8a487]"
               >
                 <User className="h-3.5 w-3.5" />
                 <span>Acceder</span>
@@ -195,7 +194,7 @@ export function Navigation() {
 
       {/* 2. BARRA FLOTANTE INFERIOR (Móvil) */}
       <div className="fixed bottom-3 left-0 right-0 z-50 flex justify-center px-4 md:hidden">
-        <nav className="flex w-full max-w-sm items-center justify-around rounded-3xl border border-[#303937] bg-[#111615]/95 px-3 py-2 shadow-xl shadow-black/30 backdrop-blur-lg">
+        <nav className="flex w-full max-w-sm items-center justify-around rounded-3xl border border-[#3b2d24] bg-[#17110e]/95 px-3 py-2 shadow-xl shadow-black/30 backdrop-blur-lg">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -206,21 +205,21 @@ export function Navigation() {
                 className={cn(
                   'relative flex flex-col items-center justify-center rounded-2xl py-1 px-3 transition-all duration-200',
                   isActive
-                    ? isLibrary ? 'text-[#d5c39c] font-semibold' : 'text-[#b9c5a6] font-semibold'
-                    : 'text-[#79827e] hover:text-[#eceeea]'
+                    ? 'text-[#b78d6d] font-semibold'
+                    : 'text-[#81746a] hover:text-[#f1e8e0]'
                 )}
               >
                 <div className="relative">
                   <Icon className={cn('h-5 w-5', isActive && 'stroke-[2.5]')} />
                   {item.badge !== null && (
-                    <span className="absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#304b39] px-1 text-[10px] font-bold text-white shadow-sm">
+                    <span className="absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#597b96] px-1 text-[10px] font-bold text-white shadow-sm">
                       {item.badge}
                     </span>
                   )}
                 </div>
                 <span className="mt-1 text-[11px]">{item.label}</span>
                 {isActive && (
-                  <span className={cn('absolute bottom-0 h-1 w-5 rounded-full', isLibrary ? 'bg-[#d5c39c]' : 'bg-[#b9c5a6]')} />
+                  <span className="absolute bottom-0 h-1 w-5 rounded-full bg-[#b78d6d]" />
                 )}
               </Link>
             );

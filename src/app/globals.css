@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0e0f;
-  --foreground: #eceeea;
-  --surface: #141a18;
-  --surface-raised: #1a211e;
-  --border-subtle: #2b3430;
-  --accent: #b9c5a6;
-  --muted: #929d97;
+  --background: #100c0a;
+  --foreground: #f1e8e0;
+  --surface: #191310;
+  --surface-raised: #211812;
+  --border-subtle: #3b2d24;
+  --accent: #b78d6d;
+  --accent-blue: #a8c7d4;
+  --muted: #a09288;
 }
 
 body {

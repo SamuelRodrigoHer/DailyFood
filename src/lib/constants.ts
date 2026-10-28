@@ -1,15 +1,15 @@
 import { ShoppingCategory, Recipe, ShoppingItem } from './types';
 
 export const SHOPPING_CATEGORIES: { name: ShoppingCategory; color: string; bg: string; border: string; icon: string }[] = [
-  { name: 'Frutas y Verduras', color: 'text-[#a8c5ae]', bg: 'bg-[#19231d]', border: 'border-[#354a3b]', icon: 'Apple' },
+  { name: 'Frutas y Verduras', color: 'text-[#a8c7d4]', bg: 'bg-[#172431]', border: 'border-[#344c61]', icon: 'Apple' },
   { name: 'Carnes y Pescados', color: 'text-[#e0aaa3]', bg: 'bg-[#291e1d]', border: 'border-[#503638]', icon: 'Beef' },
-  { name: 'Lácteos y Huevos', color: 'text-[#d5bc8c]', bg: 'bg-[#282319]', border: 'border-[#51452f]', icon: 'Milk' },
-  { name: 'Panadería y Cereales', color: 'text-[#d5bc8c]', bg: 'bg-[#282319]', border: 'border-[#51452f]', icon: 'Croissant' },
-  { name: 'Despensa y Pasta', color: 'text-[#d5bc8c]', bg: 'bg-[#282319]', border: 'border-[#51452f]', icon: 'Package' },
+  { name: 'Lácteos y Huevos', color: 'text-[#d8b192]', bg: 'bg-[#302218]', border: 'border-[#543c2c]', icon: 'Milk' },
+  { name: 'Panadería y Cereales', color: 'text-[#d8b192]', bg: 'bg-[#302218]', border: 'border-[#543c2c]', icon: 'Croissant' },
+  { name: 'Despensa y Pasta', color: 'text-[#d8b192]', bg: 'bg-[#302218]', border: 'border-[#543c2c]', icon: 'Package' },
   { name: 'Congelados', color: 'text-[#a8c7d4]', bg: 'bg-[#192226]', border: 'border-[#344951]', icon: 'Snowflake' },
   { name: 'Bebidas', color: 'text-[#a8c7d4]', bg: 'bg-[#192226]', border: 'border-[#344951]', icon: 'CupSoda' },
-  { name: 'Limpieza y Hogar', color: 'text-[#beb5d4]', bg: 'bg-[#211f28]', border: 'border-[#403b4d]', icon: 'Sparkles' },
-  { name: 'Otros', color: 'text-[#c2cbc5]', bg: 'bg-[#1a211e]', border: 'border-[#2b3430]', icon: 'ShoppingBag' },
+  { name: 'Limpieza y Hogar', color: 'text-[#a8c7d4]', bg: 'bg-[#172431]', border: 'border-[#344c61]', icon: 'Sparkles' },
+  { name: 'Otros', color: 'text-[#c7b8ad]', bg: 'bg-[#211812]', border: 'border-[#3b2d24]', icon: 'ShoppingBag' },
 ];
 
 export const MEAL_TYPES = [
