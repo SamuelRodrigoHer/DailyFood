@@ -1,5 +1,6 @@
 -- Espacios domésticos: cada cuenta pertenece a un hogar y solo sus miembros
--- pueden leer o modificar sus recetas, menú y lista de la compra.
+-- pueden leer o modificar los datos compartidos. Los libros también admiten
+-- filas personales con household_id NULL.
 
 CREATE TABLE IF NOT EXISTS public.households (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -34,6 +35,34 @@ CREATE TABLE IF NOT EXISTS public.recipes (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS public.books (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  household_id UUID REFERENCES public.households(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  author TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'want_to_read',
+  rating INTEGER,
+  page_count INTEGER,
+  current_page INTEGER NOT NULL DEFAULT 0,
+  cover_url TEXT,
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Keep upgrades safe for databases where the reading list table already exists.
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS household_id UUID REFERENCES public.households(id) ON DELETE CASCADE;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS author TEXT NOT NULL DEFAULT '';
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'want_to_read';
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS rating INTEGER;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS page_count INTEGER;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS current_page INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS cover_url TEXT;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS notes TEXT;
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT now();
+
 CREATE TABLE IF NOT EXISTS public.meal_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   household_id UUID REFERENCES public.households(id) ON DELETE CASCADE,
@@ -64,6 +93,20 @@ CREATE TABLE IF NOT EXISTS public.shopping_items (
 ALTER TABLE public.recipes ADD COLUMN IF NOT EXISTS household_id UUID REFERENCES public.households(id) ON DELETE CASCADE;
 ALTER TABLE public.meal_plans ADD COLUMN IF NOT EXISTS household_id UUID REFERENCES public.households(id) ON DELETE CASCADE;
 ALTER TABLE public.shopping_items ADD COLUMN IF NOT EXISTS household_id UUID REFERENCES public.households(id) ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS books_household_status_created_at_idx
+  ON public.books (household_id, status, created_at DESC);
+CREATE INDEX IF NOT EXISTS books_personal_user_created_at_idx
+  ON public.books (user_id, created_at DESC) WHERE household_id IS NULL;
+
+-- A legacy book assigned to someone else's household becomes private to its
+-- row owner instead of remaining visible to the unrelated household.
+UPDATE public.books b
+SET household_id = NULL
+WHERE b.household_id IS NOT NULL
+  AND b.user_id IS NOT NULL
+  AND b.household_id IS DISTINCT FROM (
+    SELECT hm.household_id FROM public.household_members hm WHERE hm.user_id = b.user_id
+  );
 
 CREATE OR REPLACE FUNCTION public.create_household_for_new_user()
 RETURNS TRIGGER
@@ -198,6 +241,7 @@ BEGIN
     EXISTS (SELECT 1 FROM public.recipes WHERE household_id = current_household)
     OR EXISTS (SELECT 1 FROM public.meal_plans WHERE household_id = current_household)
     OR EXISTS (SELECT 1 FROM public.shopping_items WHERE household_id = current_household)
+    OR EXISTS (SELECT 1 FROM public.books WHERE household_id = current_household)
   ) THEN
     RAISE EXCEPTION 'Este usuario ya tiene datos en su hogar. Para conservarlos, usa otra cuenta para unirte.';
   END IF;
@@ -218,9 +262,11 @@ ALTER TABLE public.household_invites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.recipes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.meal_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.shopping_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.books ENABLE ROW LEVEL SECURITY;
 
 GRANT SELECT ON public.households, public.household_members, public.household_invites TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.recipes, public.meal_plans, public.shopping_items TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.books TO authenticated;
 
 DROP POLICY IF EXISTS "Household members can view their household" ON public.households;
 CREATE POLICY "Household members can view their household" ON public.households
@@ -244,6 +290,33 @@ CREATE POLICY "Household members can manage recipes" ON public.recipes
   FOR ALL TO authenticated
   USING (household_id = public.my_household_id())
   WITH CHECK (household_id = public.my_household_id());
+
+DO $$
+DECLARE existing_policy RECORD;
+BEGIN
+  FOR existing_policy IN
+    SELECT policyname FROM pg_policies WHERE schemaname = 'public' AND tablename = 'books'
+  LOOP
+    EXECUTE format('DROP POLICY %I ON public.books', existing_policy.policyname);
+  END LOOP;
+END;
+$$;
+CREATE POLICY "Book owners and household members can read" ON public.books
+  FOR SELECT TO authenticated
+  USING (household_id = public.my_household_id() OR (household_id IS NULL AND user_id = auth.uid()));
+CREATE POLICY "Book owners and household members can add" ON public.books
+  FOR INSERT TO authenticated
+  WITH CHECK (
+    (household_id IS NULL AND user_id = auth.uid())
+    OR (household_id = public.my_household_id() AND (user_id IS NULL OR user_id = auth.uid()))
+  );
+CREATE POLICY "Book owners and household members can update" ON public.books
+  FOR UPDATE TO authenticated
+  USING (household_id = public.my_household_id() OR (household_id IS NULL AND user_id = auth.uid()))
+  WITH CHECK (household_id = public.my_household_id() OR (household_id IS NULL AND user_id = auth.uid()));
+CREATE POLICY "Book owners and household members can delete" ON public.books
+  FOR DELETE TO authenticated
+  USING (household_id = public.my_household_id() OR (household_id IS NULL AND user_id = auth.uid()));
 
 DROP POLICY IF EXISTS "Household members can manage meal plans" ON public.meal_plans;
 DROP POLICY IF EXISTS "Shared access for authenticated users on meal_plans" ON public.meal_plans;
@@ -277,8 +350,16 @@ GRANT EXECUTE ON FUNCTION public.join_household(TEXT) TO authenticated;
 ALTER TABLE public.shopping_items REPLICA IDENTITY FULL;
 ALTER TABLE public.meal_plans REPLICA IDENTITY FULL;
 ALTER TABLE public.recipes REPLICA IDENTITY FULL;
+ALTER TABLE public.books REPLICA IDENTITY FULL;
 
 DO $$ BEGIN
-  ALTER PUBLICATION supabase_realtime ADD TABLE public.shopping_items, public.meal_plans, public.recipes;
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.shopping_items, public.meal_plans, public.recipes, public.books;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+-- The grouped legacy statement above may encounter tables already present in
+-- the publication before it reaches books. Add books independently as well.
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.books;
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;

@@ -15,6 +15,7 @@ import {
   HardDrive,
   Home,
   Activity,
+  BookOpen,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -39,13 +40,19 @@ export function Navigation() {
     ...(user ? [{ href: '/hogar', label: 'Mi hogar', icon: Home }] : []),
   ];
 
+  const libraryNavItems = [
+    { href: '/', label: 'Aplicaciones', icon: Home },
+    { href: '/biblioteca', label: 'Biblioteca', icon: BookOpen },
+    ...(user ? [{ href: '/hogar', label: 'Mi hogar', icon: Home }] : []),
+  ];
+
   const navItems: { href: string; label: string; icon: LucideIcon; badge?: number | null }[] =
     pathname === '/gimnasio'
       ? [
           { href: '/', label: 'Aplicaciones', icon: Home },
           { href: '/gimnasio', label: 'Gimnasio', icon: Activity },
         ]
-      : mealNavItems;
+      : pathname === '/biblioteca' ? libraryNavItems : mealNavItems;
 
   if (pathname === '/') return null;
 
