@@ -486,19 +486,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (newItems.length === 0) return;
 
-    setMealPlans((prev) => {
-      // Reemplazamos las comidas que ya hubiera en los días destino
-      const filtered = prev.filter((m) => !toDates.includes(m.date));
-      const updated = [...filtered, ...newItems];
-      if (!user || !supabase) saveLocal('app_meals', updated);
-      return updated;
-    });
+    const filtered = mealPlans.filter((m) => !toDates.includes(m.date));
+    const updated = [...filtered, ...newItems];
 
     if (supabase && user) {
-      // Eliminar las que hubiera en destino e insertar las nuevas
-      const deleted = await trackSync(supabase.from('meal_plans').delete().in('date', toDates));
-      if (deleted && !deleted.error) await trackSync(supabase.from('meal_plans').insert(newItems));
+      const result = await trackSync(supabase.rpc('replace_household_meal_plans', {
+        target_dates: toDates,
+        planned_meals: newItems.map(({ date, meal_type, title, recipe_id, notes }) => ({
+          date, meal_type, title, recipe_id, notes,
+        })),
+      }));
+      if (!result || result.error) return;
+      setMealPlans([...filtered, ...((result.data ?? []) as MealPlanItem[])]);
+    } else {
+      setMealPlans(updated);
+      saveLocal('app_meals', updated);
     }
+
   };
 
   const autoFillWeekMeals = async (dateStrings: string[]): Promise<number> => {

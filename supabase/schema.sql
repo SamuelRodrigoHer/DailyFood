@@ -212,6 +212,37 @@ BEGIN
 END;
 $$;
 
+-- Replace a household's planned meals in one transaction so a failed insert
+-- cannot leave copied-week destinations empty.
+CREATE OR REPLACE FUNCTION public.replace_household_meal_plans(target_dates DATE[], planned_meals JSONB)
+RETURNS SETOF public.meal_plans
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = ''
+AS $$
+DECLARE
+  current_household UUID := public.my_household_id();
+BEGIN
+  IF auth.uid() IS NULL OR current_household IS NULL THEN
+    RAISE EXCEPTION 'Debes pertenecer a un hogar';
+  END IF;
+  IF target_dates IS NULL OR jsonb_typeof(planned_meals) <> 'array' THEN
+    RAISE EXCEPTION 'Las fechas y comidas de destino no son válidas';
+  END IF;
+
+  DELETE FROM public.meal_plans
+  WHERE household_id = current_household AND date = ANY(target_dates);
+
+  RETURN QUERY
+  INSERT INTO public.meal_plans (household_id, date, meal_type, title, recipe_id, notes)
+  SELECT current_household, item.date, item.meal_type, item.title, item.recipe_id, item.notes
+  FROM pg_catalog.jsonb_to_recordset(planned_meals)
+    AS item(date DATE, meal_type TEXT, title TEXT, recipe_id UUID, notes TEXT)
+  WHERE item.date = ANY(target_dates)
+  RETURNING *;
+END;
+$$;
+
 ALTER TABLE public.households ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.household_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.household_invites ENABLE ROW LEVEL SECURITY;
@@ -270,9 +301,11 @@ CREATE POLICY "Household members can manage shopping items" ON public.shopping_i
 REVOKE EXECUTE ON FUNCTION public.my_household_id() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.create_household_invite() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.join_household(TEXT) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.replace_household_meal_plans(DATE[], JSONB) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.my_household_id() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.create_household_invite() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.join_household(TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.replace_household_meal_plans(DATE[], JSONB) TO authenticated;
 
 ALTER TABLE public.shopping_items REPLICA IDENTITY FULL;
 ALTER TABLE public.meal_plans REPLICA IDENTITY FULL;
