@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Recipe, MealPlanItem, ShoppingItem, ShoppingCategory, MealType } from '@/lib/types';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { Recipe, MealPlanItem, ShoppingItem, ShoppingCategory, MealType, HouseholdInvite } from '@/lib/types';
 import { INITIAL_RECIPES, INITIAL_SHOPPING_ITEMS } from '@/lib/constants';
 import { guessShoppingCategory, toLocalDateString } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
@@ -28,7 +28,9 @@ interface AppContextType {
   login: (email: string, pass: string) => Promise<{ error?: string }>;
   signUp: (email: string, pass: string, name?: string) => Promise<{ error?: string; message?: string }>;
   logout: () => Promise<void>;
-  createHouseholdInvite: () => Promise<{ code?: string; error?: string }>;
+  createHouseholdInvite: () => Promise<{ code?: string; expiresAt?: string; error?: string }>;
+  getHouseholdInvites: () => Promise<{ invites?: HouseholdInvite[]; error?: string }>;
+  revokeHouseholdInvite: (code: string) => Promise<{ error?: string }>;
   joinHousehold: (code: string) => Promise<{ error?: string }>;
   
   // Acciones de recetas
@@ -338,9 +340,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (error) return { error: error.message };
     const invite = Array.isArray(data) ? data[0] : data;
     return invite?.invite_code
-      ? { code: String(invite.invite_code) }
+      ? { code: String(invite.invite_code), expiresAt: String(invite.expires_at) }
       : { error: 'No se pudo generar el código.' };
   };
+
+  const getHouseholdInvites = useCallback(async () => {
+    if (!supabase || !user?.household_id) return { error: 'Inicia sesión para ver las invitaciones.' };
+    const { data, error } = await supabase
+      .from('household_invites')
+      .select('code, household_id, created_by, created_at, expires_at')
+      .eq('household_id', user.household_id)
+      .order('created_at', { ascending: false });
+    if (error) return { error: error.message };
+    return { invites: (data || []) as HouseholdInvite[] };
+  }, [supabase, user?.household_id]);
+
+  const revokeHouseholdInvite = useCallback(async (code: string) => {
+    if (!supabase || !user?.household_id) return { error: 'Inicia sesión para gestionar las invitaciones.' };
+    const { error } = await supabase.rpc('revoke_household_invite', { invite_code: code });
+    return error ? { error: error.message } : {};
+  }, [supabase, user?.household_id]);
 
   const joinHousehold = async (code: string) => {
     if (!supabase || !user) return { error: 'Inicia sesión para unirte a un hogar.' };
@@ -687,6 +706,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         signUp,
         logout,
         createHouseholdInvite,
+        getHouseholdInvites,
+        revokeHouseholdInvite,
         joinHousehold,
         addRecipe,
         updateRecipe,

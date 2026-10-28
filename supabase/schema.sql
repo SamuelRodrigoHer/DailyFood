@@ -226,6 +226,34 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.revoke_household_invite(invite_code UUID)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  target_household UUID;
+BEGIN
+  IF auth.uid() IS NULL THEN RAISE EXCEPTION 'Debes iniciar sesión'; END IF;
+
+  SELECT hi.household_id INTO target_household
+  FROM public.household_invites hi
+  WHERE hi.code = invite_code AND hi.expires_at > now();
+  IF target_household IS NULL THEN RAISE EXCEPTION 'La invitación ya no está activa'; END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM public.household_members hm
+    WHERE hm.household_id = target_household AND hm.user_id = auth.uid()
+  ) THEN
+    RAISE EXCEPTION 'No tienes permiso para revocar esta invitación';
+  END IF;
+
+  DELETE FROM public.household_invites hi
+  WHERE hi.code = invite_code AND hi.household_id = target_household;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.join_household(invite_code TEXT)
 RETURNS UUID
 LANGUAGE plpgsql
@@ -356,11 +384,13 @@ CREATE POLICY "Household members can manage shopping items" ON public.shopping_i
 
 REVOKE EXECUTE ON FUNCTION public.my_household_id() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.create_household_invite() FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.revoke_household_invite(UUID) FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.join_household(TEXT) FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.replace_household_meal_plans(DATE[], JSONB) FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.upsert_household_meal_plan(DATE, TEXT, TEXT, UUID, TEXT) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.my_household_id() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.create_household_invite() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.revoke_household_invite(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.join_household(TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.replace_household_meal_plans(DATE[], JSONB) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.upsert_household_meal_plan(DATE, TEXT, TEXT, UUID, TEXT) TO authenticated;

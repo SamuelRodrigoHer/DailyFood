@@ -1,16 +1,41 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
-import { Copy, Home, KeyRound, Loader2, Users } from 'lucide-react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { Copy, Home, KeyRound, Loader2, RefreshCw, Trash2, Users } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import type { HouseholdInvite } from '@/lib/types';
+
+function formatExpiration(value: string) {
+  return new Intl.DateTimeFormat('es-ES', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value));
+}
 
 export default function HouseholdPage() {
-  const { user, isSupabaseConnected, createHouseholdInvite, joinHousehold } = useApp();
+  const { user, isSupabaseConnected, createHouseholdInvite, getHouseholdInvites, revokeHouseholdInvite, joinHousehold } = useApp();
   const [inviteCode, setInviteCode] = useState('');
+  const [inviteExpiresAt, setInviteExpiresAt] = useState('');
+  const [invites, setInvites] = useState<HouseholdInvite[]>([]);
+  const [loadingInvites, setLoadingInvites] = useState(false);
   const [joinCode, setJoinCode] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const householdId = user?.household_id;
+
+  const refreshInvites = useCallback(async () => {
+    setLoadingInvites(true);
+    const result = await getHouseholdInvites();
+    if (result.error) setError(result.error);
+    else setInvites(result.invites || []);
+    setLoadingInvites(false);
+  }, [getHouseholdInvites]);
+
+  useEffect(() => {
+    if (householdId && isSupabaseConnected) void refreshInvites();
+    else setInvites([]);
+  }, [householdId, isSupabaseConnected, refreshInvites]);
 
   const handleInvite = async () => {
     setBusy(true);
@@ -18,7 +43,11 @@ export default function HouseholdPage() {
     setMessage('');
     const result = await createHouseholdInvite();
     if (result.error) setError(result.error);
-    else setInviteCode(result.code || '');
+    else {
+      setInviteCode(result.code || '');
+      setInviteExpiresAt(result.expiresAt || '');
+      await refreshInvites();
+    }
     setBusy(false);
   };
 
@@ -32,6 +61,7 @@ export default function HouseholdPage() {
     else {
       setJoinCode('');
       setInviteCode('');
+      setInviteExpiresAt('');
       setMessage('Te has unido al hogar. El menú y la compra ya están sincronizados.');
     }
     setBusy(false);
@@ -40,7 +70,25 @@ export default function HouseholdPage() {
   const copyCode = async () => {
     if (!inviteCode) return;
     await navigator.clipboard.writeText(inviteCode);
-    setMessage('Código copiado. Caduca en 7 días.');
+    setMessage(`Código copiado. Es reutilizable hasta ${inviteExpiresAt ? formatExpiration(inviteExpiresAt) : 'su caducidad'}.`);
+  };
+
+  const handleRevoke = async (invite: HouseholdInvite) => {
+    if (!window.confirm(`¿Revocar la invitación que caduca el ${formatExpiration(invite.expires_at)}? El código dejará de funcionar.`)) return;
+    setBusy(true);
+    setError('');
+    setMessage('');
+    const result = await revokeHouseholdInvite(invite.code);
+    if (result.error) setError(result.error);
+    else {
+      setInvites((current) => current.filter((item) => item.code !== invite.code));
+      if (inviteCode === invite.code) {
+        setInviteCode('');
+        setInviteExpiresAt('');
+      }
+      setMessage('Invitación revocada. El código ya no se puede canjear.');
+    }
+    setBusy(false);
   };
 
   return (
@@ -75,7 +123,7 @@ export default function HouseholdPage() {
               <h2 className="font-bold">Invitar a alguien</h2>
             </div>
             <p className="mb-5 text-sm leading-6 text-neutral-500">
-              Genera un código temporal y compártelo con quien quieras añadir. Solo las cuentas que lo canjeen tendrán acceso a los datos de este hogar.
+              Genera un código temporal y compártelo con quien quieras añadir. Se puede reutilizar para invitar a varias personas hasta que caduque o lo revoques.
             </p>
             <button
               type="button"
@@ -84,7 +132,7 @@ export default function HouseholdPage() {
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:opacity-50"
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
-              Generar código (válido 7 días)
+              Generar código (válido 7 días, reutilizable)
             </button>
             {inviteCode && (
               <div className="mt-4 flex items-center gap-2 rounded-2xl bg-neutral-50 p-3">
@@ -93,6 +141,9 @@ export default function HouseholdPage() {
                   <Copy className="h-4 w-4" />
                 </button>
               </div>
+            )}
+            {inviteCode && inviteExpiresAt && (
+              <p className="mt-2 text-xs text-neutral-500">Caduca el {formatExpiration(inviteExpiresAt)}. Puedes revocarlo en cualquier momento.</p>
             )}
           </section>
 
@@ -120,6 +171,46 @@ export default function HouseholdPage() {
             </form>
           </section>
         </div>
+      )}
+
+      {user && isSupabaseConnected && (
+        <section className="mt-5 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm" aria-labelledby="household-invites-title">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 id="household-invites-title" className="font-bold text-neutral-900">Invitaciones del hogar</h2>
+              <p className="mt-1 text-sm text-neutral-500">Los códigos se pueden usar varias veces hasta caducar.</p>
+            </div>
+            <button type="button" onClick={() => void refreshInvites()} disabled={loadingInvites || busy} aria-label="Actualizar invitaciones" className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-500 hover:bg-neutral-100 disabled:opacity-50">
+              {loadingInvites ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+            </button>
+          </div>
+          {loadingInvites && invites.length === 0 ? (
+            <p className="py-4 text-sm text-neutral-500">Cargando invitaciones…</p>
+          ) : invites.length === 0 ? (
+            <p className="rounded-2xl bg-neutral-50 px-4 py-5 text-sm text-neutral-500">No hay invitaciones registradas.</p>
+          ) : (
+            <ul className="divide-y divide-neutral-100">
+              {invites.map((invite) => {
+                const isExpired = new Date(invite.expires_at).getTime() <= Date.now();
+                return (
+                  <li key={invite.code} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <code className="break-all text-sm font-semibold text-neutral-800">{invite.code}</code>
+                      <p className="mt-1 text-xs text-neutral-500">{isExpired ? 'Caducó' : 'Activa'} · Caducidad: {formatExpiration(invite.expires_at)}</p>
+                    </div>
+                    {isExpired ? (
+                      <span className="text-xs font-semibold text-neutral-400">Caducada</span>
+                    ) : (
+                      <button type="button" onClick={() => void handleRevoke(invite)} disabled={busy} className="inline-flex min-h-10 items-center justify-center gap-2 self-start rounded-xl border border-rose-200 px-3 text-xs font-bold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50 sm:self-auto">
+                        <Trash2 className="h-4 w-4" /> Revocar
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
       )}
 
       {(message || error) && (

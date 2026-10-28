@@ -25,7 +25,7 @@ Abre [http://localhost:3000](http://localhost:3000). Sin variables de Supabase, 
 
 El esquema principal impone una comida por hogar, fecha y tipo. Si `schema.sql` detecta duplicados antiguos, se detiene con un error para que se resuelvan manualmente; no elimina comidas automáticamente.
 
-Cada cuenta nueva recibe un hogar privado vacío. Desde «Mi hogar» puede generar una invitación temporal para compartir menú, recetas y lista con otras cuentas. Conviene canjear la invitación antes de añadir datos; el código caduca en 7 días. RLS limita las lecturas y escrituras a los miembros del hogar; conocer un UUID de otra fila no concede acceso. El modo demo local sí incluye recetas y ejemplos iniciales.
+Cada cuenta nueva recibe un hogar privado vacío. Desde «Mi hogar» puede generar una invitación temporal para compartir menú, recetas y lista con otras cuentas. Los códigos se pueden reutilizar para varias personas hasta que caduquen a los 7 días; cualquier miembro del hogar puede revocar un código activo. Conviene canjear la invitación antes de añadir datos. RLS limita las lecturas y escrituras a los miembros del hogar; conocer un UUID de otra fila no concede acceso. El modo demo local sí incluye recetas y ejemplos iniciales.
 
 Una cuenta solo puede pertenecer a un hogar a la vez. Para evitar perder datos, el código solo permite cambiar desde un hogar todavía vacío; si esa cuenta ya tiene recetas, comidas o artículos, utiliza una cuenta nueva para aceptar la invitación. Al migrar desde el esquema anterior, las filas con `user_id` se asignan al hogar de esa cuenta. Las filas antiguas sin propietario permanecen inaccesibles y deben asignarse manualmente si necesitas conservarlas.
 

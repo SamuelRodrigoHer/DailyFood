@@ -58,6 +58,14 @@ export interface UserProfile {
   created_at?: string;
 }
 
+export interface HouseholdInvite {
+  code: string;
+  household_id: string;
+  created_by: string;
+  created_at: string;
+  expires_at: string;
+}
+
 export interface GymExercise {
   id: string;
   name: string;
