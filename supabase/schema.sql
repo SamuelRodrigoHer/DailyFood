@@ -138,6 +138,27 @@ ALTER TABLE public.meal_plans
   REFERENCES public.recipes (household_id, id)
   ON DELETE SET NULL (recipe_id);
 
+-- A meal slot is unique within a household. Stop with a useful error if older
+-- data already contains duplicates; never delete a user's meal automatically.
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM public.meal_plans
+    WHERE household_id IS NOT NULL
+    GROUP BY household_id, date, meal_type
+    HAVING count(*) > 1
+  ) THEN
+    RAISE EXCEPTION 'Hay comidas duplicadas por hogar, fecha y tipo. Resuélvelas manualmente antes de volver a ejecutar schema.sql.';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'meal_plans_household_slot_key'
+      AND conrelid = 'public.meal_plans'::regclass
+  ) THEN
+    ALTER TABLE public.meal_plans
+      ADD CONSTRAINT meal_plans_household_slot_key UNIQUE (household_id, date, meal_type);
+  END IF;
+END $$;
+
 CREATE OR REPLACE FUNCTION public.my_household_id()
 RETURNS UUID
 LANGUAGE SQL
@@ -146,6 +167,41 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
   SELECT hm.household_id FROM public.household_members hm WHERE hm.user_id = auth.uid()
+$$;
+
+CREATE OR REPLACE FUNCTION public.upsert_household_meal_plan(
+  planned_date DATE,
+  planned_type TEXT,
+  planned_title TEXT,
+  planned_recipe_id UUID DEFAULT NULL,
+  planned_notes TEXT DEFAULT NULL
+)
+RETURNS public.meal_plans
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = ''
+AS $$
+DECLARE
+  current_household UUID := public.my_household_id();
+  saved_meal public.meal_plans;
+BEGIN
+  IF auth.uid() IS NULL OR current_household IS NULL THEN
+    RAISE EXCEPTION 'Debes pertenecer a un hogar';
+  END IF;
+
+  INSERT INTO public.meal_plans
+    (household_id, user_id, date, meal_type, title, recipe_id, notes)
+  VALUES
+    (current_household, auth.uid(), planned_date, planned_type, planned_title, planned_recipe_id, planned_notes)
+  ON CONFLICT (household_id, date, meal_type)
+  DO UPDATE SET
+    title = EXCLUDED.title,
+    recipe_id = EXCLUDED.recipe_id,
+    notes = EXCLUDED.notes
+  RETURNING * INTO saved_meal;
+
+  RETURN saved_meal;
+END;
 $$;
 
 CREATE OR REPLACE FUNCTION public.create_household_invite()
@@ -302,10 +358,12 @@ REVOKE EXECUTE ON FUNCTION public.my_household_id() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.create_household_invite() FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.join_household(TEXT) FROM PUBLIC, anon;
 REVOKE EXECUTE ON FUNCTION public.replace_household_meal_plans(DATE[], JSONB) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.upsert_household_meal_plan(DATE, TEXT, TEXT, UUID, TEXT) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.my_household_id() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.create_household_invite() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.join_household(TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.replace_household_meal_plans(DATE[], JSONB) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.upsert_household_meal_plan(DATE, TEXT, TEXT, UUID, TEXT) TO authenticated;
 
 ALTER TABLE public.shopping_items REPLICA IDENTITY FULL;
 ALTER TABLE public.meal_plans REPLICA IDENTITY FULL;

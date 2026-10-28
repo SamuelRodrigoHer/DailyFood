@@ -422,19 +422,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       notes,
     };
 
-    setMealPlans((prev) => {
-      const filtered = prev.filter((m) => !(m.date === date && m.meal_type === mealType));
-      const updated = [...filtered, mealItem];
-      if (!user || !supabase) saveLocal('app_meals', updated);
-      return updated;
-    });
-
     if (supabase && user) {
-      if (existing) {
-        await trackSync(supabase.from('meal_plans').update(mealItem).eq('id', mealItem.id));
-      } else {
-        await trackSync(supabase.from('meal_plans').insert(mealItem));
-      }
+      const result = await trackSync(supabase.rpc('upsert_household_meal_plan', {
+        planned_date: date,
+        planned_type: mealType,
+        planned_title: title,
+        planned_recipe_id: recipeId ?? null,
+        planned_notes: notes ?? null,
+      }));
+      if (!result || result.error || !result.data) return;
+      const savedMeal = result.data as MealPlanItem;
+      setMealPlans((prev) => [
+        ...prev.filter((m) => !(m.date === date && m.meal_type === mealType)),
+        savedMeal,
+      ]);
+    } else {
+      setMealPlans((prev) => {
+        const filtered = prev.filter((m) => !(m.date === date && m.meal_type === mealType));
+        const updated = [...filtered, mealItem];
+        saveLocal('app_meals', updated);
+        return updated;
+      });
     }
   };
 
