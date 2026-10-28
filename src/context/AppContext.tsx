@@ -3,13 +3,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Recipe, MealPlanItem, ShoppingItem, ShoppingCategory, MealType } from '@/lib/types';
 import { INITIAL_RECIPES, INITIAL_SHOPPING_ITEMS } from '@/lib/constants';
-import { guessShoppingCategory } from '@/lib/utils';
+import { guessShoppingCategory, toLocalDateString } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
 interface UserSession {
   id: string;
   email: string;
+  name?: string;
   household_id?: string;
 }
 
@@ -17,6 +18,7 @@ interface AppContextType {
   user: UserSession | null;
   isSupabaseConnected: boolean;
   isRealtimeActive: boolean;
+  syncError: string | null;
   isLoading: boolean;
   recipes: Recipe[];
   mealPlans: MealPlanItem[];
@@ -24,7 +26,7 @@ interface AppContextType {
   
   // Acciones de autenticación
   login: (email: string, pass: string) => Promise<{ error?: string }>;
-  signUp: (email: string, pass: string) => Promise<{ error?: string; message?: string }>;
+  signUp: (email: string, pass: string, name?: string) => Promise<{ error?: string; message?: string }>;
   logout: () => Promise<void>;
   createHouseholdInvite: () => Promise<{ code?: string; error?: string }>;
   joinHousehold: (code: string) => Promise<{ error?: string }>;
@@ -55,6 +57,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserSession | null>(null);
   const [isSupabaseConnected, setIsSupabaseConnected] = useState(false);
   const [isRealtimeActive, setIsRealtimeActive] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -80,7 +83,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (disposed) return;
         if (session?.user) {
           const { data: householdId } = await supabase.rpc('my_household_id');
-          setUser({ id: session.user.id, email: session.user.email || '', household_id: householdId || undefined });
+          setUser({ id: session.user.id, email: session.user.email || '', name: session.user.user_metadata?.display_name, household_id: householdId || undefined });
           if (householdId) await loadSharedSupabaseData(householdId);
           else loadLocalData();
         } else {
@@ -92,7 +95,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           if (session?.user) {
             const { data: householdId } = await supabase.rpc('my_household_id');
             if (disposed) return;
-            setUser({ id: session.user.id, email: session.user.email || '', household_id: householdId || undefined });
+            setUser({ id: session.user.id, email: session.user.email || '', name: session.user.user_metadata?.display_name, household_id: householdId || undefined });
             if (householdId) await loadSharedSupabaseData(householdId);
             else loadLocalData();
           } else {
@@ -177,9 +180,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             }
           )
           .subscribe((status) => {
-            if (status === 'SUBSCRIBED') {
-              setIsRealtimeActive(true);
-            }
+            setIsRealtimeActive(status === 'SUBSCRIBED');
           });
 
         if (!disposed) setIsLoading(false);
@@ -220,8 +221,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (storedMeals) {
       try { setMealPlans(JSON.parse(storedMeals)); } catch { setMealPlans([]); }
     } else {
-      const today = new Date().toISOString().split('T')[0];
-      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+      const today = toLocalDateString();
+      const tomorrowDate = new Date();
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const tomorrow = toLocalDateString(tomorrowDate);
       const defaultMeals: MealPlanItem[] = [
         { id: 'meal-1', date: today, meal_type: 'almuerzo', title: 'Lentejas con verduras', recipe_id: 'receta-1' },
         { id: 'meal-2', date: today, meal_type: 'cena', title: 'Salmón al horno con patatas panadera', recipe_id: 'receta-2' },
@@ -270,6 +273,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  async function trackSync<T extends { error: { message: string } | null }>(request: PromiseLike<T>) {
+    try {
+      const result = await request;
+      setSyncError(result.error?.message ?? null);
+      return result;
+    } catch (error) {
+      setSyncError(error instanceof Error ? error.message : 'No se pudo sincronizar con la nube.');
+      return null;
+    }
+  }
+
   // -------------------------------------------------------------
   // AUTENTICACIÓN
   // -------------------------------------------------------------
@@ -290,18 +304,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return {};
   };
 
-  const signUp = async (email: string, pass: string) => {
+  const signUp = async (email: string, pass: string, name?: string) => {
     if (!supabase) {
-      setUser({ id: 'demo-user-123', email });
+      setUser({ id: 'demo-user-123', email, name: name?.trim() || undefined });
       return { message: 'Modo local activo.' };
     }
 
-    const { data, error } = await supabase.auth.signUp({ email, password: pass });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password: pass,
+      options: { data: { display_name: name?.trim() || null } },
+    });
     if (error) return { error: error.message };
     if (data.user && data.session) {
       const { data: householdId, error: householdError } = await supabase.rpc('my_household_id');
       if (householdError || !householdId) return { error: householdError?.message || 'No se pudo crear tu hogar.' };
-      setUser({ id: data.user.id, email: data.user.email || '', household_id: householdId });
+      setUser({ id: data.user.id, email: data.user.email || '', name: data.user.user_metadata?.display_name, household_id: householdId });
       await loadSharedSupabaseData(householdId);
     }
     return { message: 'Cuenta creada correctamente.' };
@@ -353,7 +371,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('recipes').insert(newRecipe);
+      await trackSync(supabase.from('recipes').insert(newRecipe));
     }
   };
 
@@ -365,7 +383,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('recipes').update(updatedRecipe).eq('id', updatedRecipe.id);
+      await trackSync(supabase.from('recipes').update(updatedRecipe).eq('id', updatedRecipe.id));
     }
   };
 
@@ -377,7 +395,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('recipes').delete().eq('id', id);
+      await trackSync(supabase.from('recipes').delete().eq('id', id));
     }
   };
 
@@ -413,9 +431,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (supabase && user) {
       if (existing) {
-        await supabase.from('meal_plans').update(mealItem).eq('id', mealItem.id);
+        await trackSync(supabase.from('meal_plans').update(mealItem).eq('id', mealItem.id));
       } else {
-        await supabase.from('meal_plans').insert(mealItem);
+        await trackSync(supabase.from('meal_plans').insert(mealItem));
       }
     }
   };
@@ -428,7 +446,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('meal_plans').delete().eq('id', id);
+      await trackSync(supabase.from('meal_plans').delete().eq('id', id));
     }
   };
 
@@ -440,7 +458,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('meal_plans').delete().in('date', dateStrings);
+      await trackSync(supabase.from('meal_plans').delete().in('date', dateStrings));
     }
   };
 
@@ -478,8 +496,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (supabase && user) {
       // Eliminar las que hubiera en destino e insertar las nuevas
-      await supabase.from('meal_plans').delete().in('date', toDates);
-      await supabase.from('meal_plans').insert(newItems);
+      const deleted = await trackSync(supabase.from('meal_plans').delete().in('date', toDates));
+      if (deleted && !deleted.error) await trackSync(supabase.from('meal_plans').insert(newItems));
     }
   };
 
@@ -534,7 +552,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('meal_plans').insert(newItems);
+      await trackSync(supabase.from('meal_plans').insert(newItems));
     }
 
     return newItems.length;
@@ -565,7 +583,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('shopping_items').insert(newItem);
+      await trackSync(supabase.from('shopping_items').insert(newItem));
     }
   };
 
@@ -585,7 +603,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user && targetItem) {
-      await supabase.from('shopping_items').update({ is_bought: targetItem.is_bought }).eq('id', id);
+      await trackSync(supabase.from('shopping_items').update({ is_bought: targetItem.is_bought }).eq('id', id));
     }
   };
 
@@ -597,7 +615,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('shopping_items').delete().eq('id', id);
+      await trackSync(supabase.from('shopping_items').delete().eq('id', id));
     }
   };
 
@@ -609,7 +627,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('shopping_items').delete().eq('is_bought', true);
+      await trackSync(supabase.from('shopping_items').delete().eq('is_bought', true));
     }
   };
 
@@ -636,7 +654,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (supabase && user) {
-      await supabase.from('shopping_items').insert(newItems);
+      await trackSync(supabase.from('shopping_items').insert(newItems));
     }
 
     return newItems.length;
@@ -648,6 +666,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         user,
         isSupabaseConnected,
         isRealtimeActive,
+        syncError,
         isLoading,
         recipes,
         mealPlans,

@@ -1,15 +1,25 @@
 import { createBrowserClient } from '@supabase/ssr';
 
-export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+let clientInstance: ReturnType<typeof createBrowserClient> | null = null;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+export function createClient() {
+  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim().replace(/^["']|["']$/g, '');
+  const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim().replace(/^["']|["']$/g, '');
+
+  if (!rawUrl || !rawKey) {
     return null;
   }
 
   // Normalizar URL en caso de que incluya /rest/v1 o barras al final
-  const cleanUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+  const cleanUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
 
-  return createBrowserClient(cleanUrl, supabaseAnonKey);
+  // Reusar la misma instancia en el navegador para evitar recrear clientes y listeners en cada render
+  if (typeof window !== 'undefined') {
+    if (!clientInstance) {
+      clientInstance = createBrowserClient(cleanUrl, rawKey);
+    }
+    return clientInstance;
+  }
+
+  return createBrowserClient(cleanUrl, rawKey);
 }

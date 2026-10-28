@@ -110,3 +110,24 @@ export interface GymSession {
   exercises: GymExercise[];
   created_at: string;
 }
+
+export type BookStatus = 'reading' | 'wishlist' | 'finished';
+
+export interface Book {
+  id: string;
+  user_id?: string;
+  household_id?: string;
+  title: string;
+  author: string;
+  status: BookStatus;
+  genre?: string;
+  rating?: number; // 1-5 estrellas
+  cover_url?: string;
+  cover_color?: string; // Degradado para la portada
+  pages_total?: number;
+  pages_read?: number;
+  notes?: string;
+  started_at?: string;
+  finished_at?: string;
+  created_at: string;
+}

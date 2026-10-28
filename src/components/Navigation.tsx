@@ -4,24 +4,25 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { 
-  CalendarDays, 
-  ShoppingCart, 
-  ChefHat, 
-  LayoutDashboard, 
-  User, 
-  LogOut, 
+import {
+  CalendarDays,
+  ShoppingCart,
+  ChefHat,
+  LayoutDashboard,
+  User,
+  LogOut,
   Cloud,
   HardDrive,
   Home,
   Activity,
+  BookOpen,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Navigation() {
   const pathname = usePathname();
-  const { user, logout, isSupabaseConnected, isRealtimeActive, shoppingItems } = useApp();
+  const { user, logout, isSupabaseConnected, isRealtimeActive, syncError, shoppingItems } = useApp();
 
   // Elementos pendientes por comprar
   const pendingCount = shoppingItems.filter((i) => !i.is_bought).length;
@@ -29,11 +30,11 @@ export function Navigation() {
   const mealNavItems = [
     { href: '/hoy', label: 'Hoy', icon: LayoutDashboard },
     { href: '/calendario', label: 'Menú Semanal', icon: CalendarDays },
-    { 
-      href: '/lista', 
-      label: 'Lista de Compra', 
+    {
+      href: '/lista',
+      label: 'Lista de Compra',
       icon: ShoppingCart,
-      badge: pendingCount > 0 ? pendingCount : null 
+      badge: pendingCount > 0 ? pendingCount : null
     },
     { href: '/recetas', label: 'Mis Platos', icon: ChefHat },
     ...(user ? [{ href: '/hogar', label: 'Mi hogar', icon: Home }] : []),
@@ -45,6 +46,11 @@ export function Navigation() {
           { href: '/', label: 'Aplicaciones', icon: Home },
           { href: '/gimnasio', label: 'Gimnasio', icon: Activity },
         ]
+      : pathname === '/biblioteca'
+      ? [
+          { href: '/', label: 'Aplicaciones', icon: Home },
+          { href: '/biblioteca', label: 'Biblioteca', icon: BookOpen },
+        ]
       : mealNavItems;
 
   if (pathname === '/') return null;
@@ -54,7 +60,7 @@ export function Navigation() {
       {/* 1. CABECERA SUPERIOR (Desktop y Tablet) */}
       <header className="sticky top-0 z-40 w-full border-b border-neutral-100 bg-white/80 backdrop-blur-md transition-all">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          
+
           {/* Logo y Nombre */}
           <Link href="/" className="flex items-center gap-2.5 transition-transform hover:scale-[1.02]">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-md shadow-sky-500/20">
@@ -105,59 +111,51 @@ export function Navigation() {
             })}
           </nav>
 
-          {/* Área de Usuario / Estado de Sincronización */}
+          {/* Estado de Conexión + Perfil de Usuario */}
           <div className="flex items-center gap-3">
-            {/* Indicador Nube / WebSockets en vivo */}
+
+            {/* Indicador de Estado Realtime / Conectividad */}
             <div
-              title={
-                isRealtimeActive
-                  ? 'Sincronización instantánea activa con WebSockets'
-                  : isSupabaseConnected
-                  ? 'Conectado a la nube (Supabase)'
-                  : 'Almacenamiento local'
-              }
               className={cn(
-                'hidden sm:flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border transition-colors',
-                isRealtimeActive
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-2xs'
+                'hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold sm:flex',
+                syncError
+                  ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                  : isRealtimeActive
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   : isSupabaseConnected
-                  ? 'bg-blue-50 text-blue-700 border-blue-200'
-                  : 'bg-amber-50 text-amber-700 border-amber-200'
+                  ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                  : 'bg-neutral-100 text-neutral-600'
               )}
+              title={
+                syncError
+                  ? `Error de sincronización: ${syncError}`
+                  : isRealtimeActive
+                  ? 'Sincronización en tiempo real activa (WebSockets)'
+                  : isSupabaseConnected
+                  ? 'Conectado a Supabase'
+                  : 'Modo Offline / Local'
+              }
             >
-              {isRealtimeActive ? (
-                <>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span>En directo (WebSockets)</span>
-                </>
-              ) : isSupabaseConnected ? (
-                <>
-                  <Cloud className="h-3 w-3" />
-                  <span>Nube 24/7</span>
-                </>
+              {isSupabaseConnected ? (
+                <Cloud className="h-3.5 w-3.5" />
               ) : (
-                <>
-                  <HardDrive className="h-3 w-3" />
-                  <span>Modo Local</span>
-                </>
+                <HardDrive className="h-3.5 w-3.5" />
               )}
+              <span className="text-[11px]">
+                {syncError ? 'Error al guardar' : isRealtimeActive ? 'En vivo' : isSupabaseConnected ? 'Conectado' : 'Local'}
+              </span>
             </div>
 
+            {/* Perfil o Botón de Login */}
             {user ? (
-              <div className="flex items-center gap-2.5">
-                <div className="flex items-center gap-2">
-                  <div
-                    title={user.email}
-                    className="flex h-8 w-8 items-center justify-center rounded-2xl bg-neutral-900 text-xs font-bold uppercase text-white shadow-xs"
-                  >
-                    {user.email.charAt(0)}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 rounded-2xl border border-neutral-200/80 bg-neutral-50/80 py-1.5 pl-3 pr-2 shadow-xs">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-neutral-900 text-xs font-bold text-white">
+                    {(user.name || user.email).charAt(0).toUpperCase()}
                   </div>
-                  <div className="hidden flex-col sm:flex">
-                    <span className="max-w-[130px] truncate text-xs font-semibold text-neutral-800">
-                      {user.email.split('@')[0]}
+                  <div className="flex flex-col text-left">
+                    <span className="max-w-[100px] truncate text-xs font-semibold text-neutral-800 sm:max-w-[140px]">
+                      {user.name || user.email.split('@')[0]}
                     </span>
                     <span className="text-[10px] text-neutral-400">
                       {isSupabaseConnected ? 'Conectado' : 'Sesión demo'}

@@ -34,6 +34,12 @@ function translateAuthError(error: string): string {
   if (/invalid email/i.test(error)) {
     return 'Por favor, introduce un correo electrónico válido.';
   }
+  if (/load failed|failed to fetch|networkerror/i.test(error)) {
+    return 'No se pudo conectar con Supabase. Comprueba tu conexión o que tu proyecto no esté pausado en supabase.com.';
+  }
+  if (/email not confirmed/i.test(error)) {
+    return 'Debes confirmar tu correo electrónico antes de entrar, o desactivar "Confirm email" en Supabase.';
+  }
   return error;
 }
 
@@ -70,7 +76,7 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
-        const res = await signUp(email.trim(), password);
+        const res = await signUp(email.trim(), password, name.trim());
         if (res.error) {
           setErrorMsg(translateAuthError(res.error));
         } else {

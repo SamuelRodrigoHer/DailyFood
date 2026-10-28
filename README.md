@@ -1,6 +1,6 @@
 # MiModo
 
-Portal personal para reunir aplicaciones en un menú de canales. **Comidas** incluye el planificador semanal, recetas y lista de la compra. **Gimnasio** permite guardar ejercicios reutilizables, crear rutinas e iniciar sesiones con cronómetro para registrar repeticiones y peso serie a serie. Los entrenamientos en curso se conservan en el navegador y las sesiones terminadas se guardan en el historial. **Biblioteca**, para lecturas, puntuaciones y lista de deseos, sigue pendiente.
+Portal personal para reunir aplicaciones en un menú de canales. **Comidas** incluye el planificador semanal, recetas y lista de la compra. **Gimnasio** permite guardar ejercicios reutilizables, crear rutinas e iniciar sesiones con cronómetro para registrar repeticiones y peso serie a serie. Los entrenamientos en curso se conservan en el navegador y las sesiones terminadas se guardan en el historial. **Biblioteca** permite organizar lecturas, puntuaciones y lista de deseos, con escáner de portadas.
 
 ## Desarrollo local
 
@@ -19,8 +19,9 @@ Abre [http://localhost:3000](http://localhost:3000). Sin variables de Supabase, 
 2. Rellena `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` con los valores de **Project Settings → API**.
 3. Ejecuta `supabase/schema.sql` en el SQL Editor del proyecto. El script también migra las tablas del esquema anterior.
 4. Ejecuta o vuelve a ejecutar `supabase/gym_schema.sql` para activar la sincronización privada de rutinas, ejercicios y entrenamientos. El script añade las tablas que falten; sin ellas, Gimnasio guarda los datos localmente en ese navegador.
-5. En **Authentication → URL Configuration**, configura la URL local y, al desplegar, la URL pública de la aplicación.
-6. Reinicia el servidor. El formulario permite crear cuentas e iniciar sesión con correo y contraseña.
+5. Ejecuta `supabase/library_schema.sql` para crear la tabla de libros y sus políticas RLS. Requiere el esquema principal (`supabase/schema.sql`) para los hogares y la función `my_household_id()`.
+6. En **Authentication → URL Configuration**, configura la URL local y, al desplegar, la URL pública de la aplicación.
+7. Reinicia el servidor. El formulario permite crear cuentas e iniciar sesión con correo y contraseña.
 
 Cada cuenta nueva recibe un hogar privado vacío. Desde «Mi hogar» puede generar una invitación temporal para compartir menú, recetas y lista con otras cuentas. Conviene canjear la invitación antes de añadir datos; el código caduca en 7 días. RLS limita las lecturas y escrituras a los miembros del hogar; conocer un UUID de otra fila no concede acceso. El modo demo local sí incluye recetas y ejemplos iniciales.
 

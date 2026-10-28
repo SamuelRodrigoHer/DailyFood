@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -18,6 +18,8 @@ import {
   RotateCcw,
   Pencil,
   ShoppingCart,
+  Share2,
+  Copy,
 } from 'lucide-react';
 import { cn, guessShoppingCategory } from '@/lib/utils';
 import confetti from 'canvas-confetti';
@@ -218,6 +220,56 @@ function ListaContent() {
   const [editName, setEditName] = useState('');
   const [editQty, setEditQty] = useState('');
   const [editCat, setEditCat] = useState<ShoppingCategory | ''>('');
+
+  // ------ Modal confirmación vaciar ------
+    // ------ Compartir lista ------
+  const [copiedShare, setCopiedShare] = useState(false);
+
+  const generateShareText = (onlyPending = true) => {
+    const itemsToShare = onlyPending
+      ? shoppingItems.filter((i) => !i.is_bought)
+      : shoppingItems;
+
+    if (itemsToShare.length === 0) return '';
+
+    const cats: Record<string, typeof shoppingItems> = {};
+    itemsToShare.forEach((i) => {
+      if (!cats[i.category]) cats[i.category] = [];
+      cats[i.category].push(i);
+    });
+
+    let text = '🛒 *Lista de la Compra (MiModo)*\n\n';
+    Object.entries(cats).forEach(([category, items]) => {
+      text += `📍 *${category}*\n`;
+      items.forEach((item) => {
+        const qty = item.quantity ? ` (${item.quantity})` : '';
+        const check = item.is_bought ? '✅ ' : '▫️ ';
+        text += `${check}${item.name}${qty}\n`;
+      });
+      text += '\n';
+    });
+
+    return text.trim();
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = generateShareText(true);
+    if (!text) return;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
+
+  const handleCopyShare = async () => {
+    const text = generateShareText(true);
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedShare(true);
+      setTimeout(() => setCopiedShare(false), 2000);
+    } catch {
+      // Ignorar
+    }
+  };
 
   // ------ Modal confirmación vaciar ------
   const [confirmClear, setConfirmClear] = useState(false);
@@ -457,13 +509,47 @@ function ListaContent() {
         </div>
 
         {/* Botón Modo Súper */}
-        <button
-          onClick={() => setSuperModeOverride(true)}
-          className="flex shrink-0 items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/30 hover:bg-emerald-700 transition"
-        >
-          <Store className="h-4 w-4" />
-          <span>Ir al Súper 🛒</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Botón WhatsApp */}
+          <button
+            onClick={handleShareWhatsApp}
+            disabled={pendingCount === 0}
+            className="flex items-center gap-1.5 rounded-2xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 disabled:opacity-40 transition"
+            title="Enviar pendientes por WhatsApp"
+          >
+            <Share2 className="h-4 w-4 text-emerald-600" />
+            <span className="hidden sm:inline">WhatsApp</span>
+          </button>
+
+          {/* Botón Copiar */}
+          <button
+            onClick={handleCopyShare}
+            disabled={pendingCount === 0}
+            className="flex items-center gap-1.5 rounded-2xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 transition"
+            title="Copiar lista de la compra"
+          >
+            {copiedShare ? (
+              <>
+                <Check className="h-4 w-4 text-emerald-600" />
+                <span className="text-emerald-700 font-bold">¡Copiado!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4 text-neutral-500" />
+                <span className="hidden sm:inline">Copiar</span>
+              </>
+            )}
+          </button>
+
+          {/* Botón Modo Súper */}
+          <button
+            onClick={() => setSuperModeOverride(true)}
+            className="flex shrink-0 items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-emerald-500/30 hover:bg-emerald-700 transition"
+          >
+            <Store className="h-4 w-4" />
+            <span>Ir al Súper 🛒</span>
+          </button>
+        </div>
       </div>
 
       {/* 2. BARRA DE PROGRESO */}

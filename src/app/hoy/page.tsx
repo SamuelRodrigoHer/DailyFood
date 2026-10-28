@@ -14,13 +14,13 @@ import {
   Utensils,
   ChevronRight,
 } from 'lucide-react';
-import { formatDateSpanish, cn } from '@/lib/utils';
+import { formatDateSpanish, toLocalDateString, cn } from '@/lib/utils';
 
 export default function HomePage() {
   const { user, mealPlans, shoppingItems, toggleShoppingItem, addShoppingItem, recipes } = useApp();
   const [quickInput, setQuickInput] = useState('');
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = toLocalDateString();
   const todayFormatted = formatDateSpanish(todayStr);
 
   // Comidas de hoy

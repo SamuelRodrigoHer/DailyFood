@@ -23,6 +23,14 @@ export function getDayName(dateString: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
+/** Format a calendar date in the user's local timezone, without a UTC shift. */
+export function toLocalDateString(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function getWeekDates(baseDate: Date = new Date()): { dateString: string; dayName: string; dayNumber: number; isToday: boolean }[] {
   const current = new Date(baseDate);
   const day = current.getDay();
@@ -32,12 +40,12 @@ export function getWeekDates(baseDate: Date = new Date()): { dateString: string;
   const monday = new Date(current.setDate(diff));
   const week = [];
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = toLocalDateString();
 
   for (let i = 0; i < 7; i++) {
     const nextDay = new Date(monday);
     nextDay.setDate(monday.getDate() + i);
-    const dateString = nextDay.toISOString().split('T')[0];
+    const dateString = toLocalDateString(nextDay);
     const dayName = new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(nextDay);
     
     week.push({
