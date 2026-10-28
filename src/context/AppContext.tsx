@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Recipe, MealPlanItem, ShoppingItem, ShoppingCategory, MealType } from '@/lib/types';
+import { Book, Recipe, MealPlanItem, ShoppingItem, ShoppingCategory, MealType } from '@/lib/types';
 import { INITIAL_RECIPES, INITIAL_SHOPPING_ITEMS } from '@/lib/constants';
 import { guessShoppingCategory } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
@@ -18,6 +18,9 @@ interface AppContextType {
   isSupabaseConnected: boolean;
   isRealtimeActive: boolean;
   isLoading: boolean;
+  books: Book[];
+  bookError: string | null;
+  reloadBooks: () => Promise<void>;
   recipes: Recipe[];
   mealPlans: MealPlanItem[];
   shoppingItems: ShoppingItem[];
@@ -33,6 +36,11 @@ interface AppContextType {
   addRecipe: (recipe: Omit<Recipe, 'id'>) => Promise<void>;
   updateRecipe: (recipe: Recipe) => Promise<void>;
   deleteRecipe: (id: string) => Promise<void>;
+
+  // Acciones de biblioteca de lecturas
+  addBook: (book: Omit<Book, 'id'>) => Promise<void>;
+  updateBook: (book: Book) => Promise<void>;
+  deleteBook: (id: string) => Promise<void>;
   
   // Acciones de planificador
   setMealPlan: (date: string, mealType: MealType, title: string, recipeId?: string, notes?: string) => Promise<void>;
@@ -56,8 +64,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isSupabaseConnected, setIsSupabaseConnected] = useState(false);
   const [isRealtimeActive, setIsRealtimeActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [bookError, setBookError] = useState<string | null>(null);
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [mealPlans, setMealPlans] = useState<MealPlanItem[]>([]);
   const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>([]);
 
@@ -79,10 +89,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const { data: { session } } = await supabase.auth.getSession();
         if (disposed) return;
         if (session?.user) {
-          const { data: householdId } = await supabase.rpc('my_household_id');
+          const { data: householdId, error: householdError } = await supabase.rpc('my_household_id');
           setUser({ id: session.user.id, email: session.user.email || '', household_id: householdId || undefined });
-          if (householdId) await loadSharedSupabaseData(householdId);
-          else loadLocalData();
+          setBooks([]);
+          setBookError(null);
+          if (householdError) setBookError('No se pudo comprobar tu hogar. La biblioteca local no se mostrará para evitar mezclar cuentas.');
+          else if (householdId) await loadSharedSupabaseData(householdId);
+          else await loadPrivateBooks();
         } else {
           loadLocalData();
         }
@@ -90,14 +103,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         // Suscripción a cambios de sesión de autenticación
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
           if (session?.user) {
-            const { data: householdId } = await supabase.rpc('my_household_id');
+            setIsLoading(true);
+            setBooks([]);
+            setRecipes([]);
+            setMealPlans([]);
+            setShoppingItems([]);
+            setBookError(null);
+            const { data: householdId, error: householdError } = await supabase.rpc('my_household_id');
             if (disposed) return;
             setUser({ id: session.user.id, email: session.user.email || '', household_id: householdId || undefined });
-            if (householdId) await loadSharedSupabaseData(householdId);
-            else loadLocalData();
+            if (householdError) setBookError('No se pudo comprobar tu hogar. La biblioteca local no se mostrará para evitar mezclar cuentas.');
+            else if (householdId) await loadSharedSupabaseData(householdId);
+            else await loadPrivateBooks();
+            if (!disposed) setIsLoading(false);
           } else {
             setUser(null);
+            setBookError(null);
             loadLocalData();
+            if (!disposed) setIsLoading(false);
           }
         });
         unsubscribeAuth = () => subscription.unsubscribe();
@@ -176,6 +199,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               }
             }
           )
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'books' },
+            (payload) => {
+              if (payload.eventType === 'INSERT') {
+                const newBook = payload.new as Book;
+                setBooks((prev) => prev.some((book) => book.id === newBook.id) ? prev : [newBook, ...prev]);
+              } else if (payload.eventType === 'UPDATE') {
+                const updated = payload.new as Book;
+                setBooks((prev) => prev.map((book) => book.id === updated.id ? updated : book));
+              } else if (payload.eventType === 'DELETE') {
+                const deletedId = (payload.old as { id: string }).id;
+                setBooks((prev) => prev.filter((book) => book.id !== deletedId));
+              }
+            }
+          )
           .subscribe((status) => {
             if (status === 'SUBSCRIBED') {
               setIsRealtimeActive(true);
@@ -206,9 +245,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   function loadLocalData() {
     if (typeof window === 'undefined') return;
 
-    const storedRecipes = localStorage.getItem('app_recipes');
-    const storedMeals = localStorage.getItem('app_meals');
-    const storedShopping = localStorage.getItem('app_shopping');
+    let storedRecipes: string | null;
+    let storedBooks: string | null;
+    let storedMeals: string | null;
+    let storedShopping: string | null;
+    try {
+      storedRecipes = localStorage.getItem('app_recipes');
+      storedBooks = localStorage.getItem('app_books');
+      storedMeals = localStorage.getItem('app_meals');
+      storedShopping = localStorage.getItem('app_shopping');
+    } catch {
+      setBooks([]);
+      setBookError('El navegador no permite acceder al almacenamiento local. Actívalo para abrir tu biblioteca.');
+      return;
+    }
+
+    setBookError(null);
+    if (storedBooks) {
+      try {
+        const parsedBooks = JSON.parse(storedBooks);
+        if (!Array.isArray(parsedBooks)) throw new Error('Formato de biblioteca no válido');
+        setBooks(parsedBooks);
+      } catch {
+        setBooks([]);
+        setBookError('No se pudo leer la biblioteca local porque sus datos están dañados.');
+      }
+    } else {
+      setBooks([]);
+    }
 
     if (storedRecipes) {
       try { setRecipes(JSON.parse(storedRecipes)); } catch { setRecipes(INITIAL_RECIPES); }
@@ -244,22 +308,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!supabase || !householdId) return;
 
     try {
-      const [recipesRes, mealsRes, shoppingRes] = await Promise.all([
+      const [recipesRes, mealsRes, shoppingRes, booksRes] = await Promise.all([
         supabase.from('recipes').select('*').eq('household_id', householdId).order('created_at', { ascending: false }),
         supabase.from('meal_plans').select('*').eq('household_id', householdId).order('date', { ascending: true }),
         supabase.from('shopping_items').select('*').eq('household_id', householdId).order('created_at', { ascending: false }),
+        supabase.from('books').select('*').or(`household_id.is.null,household_id.eq.${householdId}`).order('created_at', { ascending: false }),
       ]);
 
-      if (recipesRes.error) throw recipesRes.error;
-      if (mealsRes.error) throw mealsRes.error;
-      if (shoppingRes.error) throw shoppingRes.error;
-
+      if (recipesRes.error) console.error('Error cargando recetas compartidas:', recipesRes.error);
       setRecipes(recipesRes.data || []);
-      if (mealsRes.data) setMealPlans(mealsRes.data);
-      if (shoppingRes.data) setShoppingItems(shoppingRes.data);
+      setMealPlans(mealsRes.data || []);
+      setShoppingItems(shoppingRes.data || []);
+      if (booksRes.error) {
+        setBooks([]);
+        setBookError(`No se pudo cargar la biblioteca sincronizada: ${booksRes.error.message}. Ejecuta supabase/schema.sql para crear o actualizar la tabla de libros.`);
+      } else {
+        setBooks(booksRes.data || []);
+        setBookError(null);
+      }
     } catch (err) {
       console.error('Error cargando datos compartidos de Supabase:', err);
-      loadLocalData();
+      setRecipes([]);
+      setMealPlans([]);
+      setShoppingItems([]);
+      setBooks([]);
+      setBookError(err instanceof Error ? `No se pudo acceder a la biblioteca: ${err.message}` : 'No se pudo acceder a la biblioteca sincronizada.');
+    }
+  }
+
+  async function loadPrivateBooks() {
+    if (!supabase) return;
+    setBookError(null);
+    try {
+      const { data, error } = await supabase.from('books').select('*').is('household_id', null).order('created_at', { ascending: false });
+      if (error) throw error;
+      setBooks(data || []);
+    } catch (error) {
+      setBooks([]);
+      setBookError(error instanceof Error ? `No se pudo cargar la biblioteca personal: ${error.message}` : 'No se pudo cargar la biblioteca personal.');
     }
   }
 
@@ -378,6 +464,110 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (supabase && user) {
       await supabase.from('recipes').delete().eq('id', id);
+    }
+  };
+
+  const addBook = async (bookData: Omit<Book, 'id'>) => {
+    setBookError(null);
+    const newBook: Book = {
+      ...bookData,
+      id: crypto.randomUUID(),
+      user_id: user?.id,
+      household_id: bookData.household_id === null ? null : (bookData.household_id || user?.household_id || null),
+      created_at: new Date().toISOString(),
+    };
+
+    if (supabase && user) {
+      if (newBook.household_id && newBook.household_id !== user.household_id) {
+        const message = 'No puedes guardar este libro en un hogar al que no perteneces.';
+        setBookError(message);
+        throw new Error(message);
+      }
+      const { data, error } = await supabase.from('books').insert(newBook).select('*').single();
+      if (error) {
+        setBookError(`No se pudo guardar el libro: ${error.message}`);
+        throw error;
+      }
+      setBooks((current) => [data as Book, ...current.filter((book) => book.id !== data.id)]);
+      return;
+    }
+
+    try {
+      const next = [newBook, ...books];
+      saveLocal('app_books', next);
+      setBooks(next);
+    } catch (error) {
+      setBookError('No se pudo guardar el libro en este dispositivo. Comprueba el espacio y los permisos del navegador.');
+      throw error;
+    }
+  };
+
+  const updateBook = async (book: Book) => {
+    setBookError(null);
+    if (supabase && user) {
+      const { data, error } = await supabase.from('books').update({
+        household_id: book.household_id || null,
+        title: book.title,
+        author: book.author,
+        status: book.status,
+        rating: book.rating ?? null,
+        page_count: book.page_count ?? null,
+        current_page: book.current_page ?? null,
+        cover_url: book.cover_url || null,
+        notes: book.notes || null,
+      }).eq('id', book.id).select('*').single();
+      if (error) {
+        setBookError(`No se pudieron guardar los cambios: ${error.message}`);
+        throw error;
+      }
+      setBooks((current) => current.map((item) => item.id === book.id ? data as Book : item));
+      return;
+    }
+
+    try {
+      const next = books.map((item) => item.id === book.id ? book : item);
+      saveLocal('app_books', next);
+      setBooks(next);
+    } catch (error) {
+      setBookError('No se pudieron guardar los cambios en este dispositivo. Comprueba el almacenamiento disponible.');
+      throw error;
+    }
+  };
+
+  const deleteBook = async (id: string) => {
+    setBookError(null);
+    if (supabase && user) {
+      const { data, error } = await supabase.from('books').delete().eq('id', id).select('id').single();
+      if (error) {
+        setBookError(`No se pudo eliminar el libro: ${error.message}`);
+        throw error;
+      }
+      if (!data) throw new Error('El libro ya no existe o no tienes permiso para eliminarlo.');
+      setBooks((current) => current.filter((book) => book.id !== id));
+      return;
+    }
+
+    try {
+      const next = books.filter((book) => book.id !== id);
+      saveLocal('app_books', next);
+      setBooks(next);
+    } catch (error) {
+      setBookError('No se pudo eliminar el libro local. Comprueba los permisos del navegador.');
+      throw error;
+    }
+  };
+
+  const reloadBooks = async () => {
+    setIsLoading(true);
+    try {
+      if (supabase && user) {
+        if (user.household_id) await loadSharedSupabaseData(user.household_id);
+        else await loadPrivateBooks();
+      } else {
+        loadLocalData();
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -649,6 +839,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isSupabaseConnected,
         isRealtimeActive,
         isLoading,
+        books,
+        bookError,
+        reloadBooks,
         recipes,
         mealPlans,
         shoppingItems,
@@ -660,6 +853,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         addRecipe,
         updateRecipe,
         deleteRecipe,
+        addBook,
+        updateBook,
+        deleteBook,
         setMealPlan,
         removeMealPlan,
         clearWeekMeals,

@@ -29,6 +29,23 @@ export interface Recipe {
   created_at?: string;
 }
 
+export type BookStatus = 'want_to_read' | 'reading' | 'read';
+
+export interface Book {
+  id: string;
+  user_id?: string;
+  household_id?: string | null;
+  title: string;
+  author: string;
+  status: BookStatus;
+  rating?: number;
+  page_count?: number;
+  current_page?: number;
+  cover_url?: string;
+  notes?: string;
+  created_at?: string;
+}
+
 export interface MealPlanItem {
   id: string;
   user_id?: string;

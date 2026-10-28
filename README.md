@@ -1,6 +1,6 @@
 # MiModo
 
-Portal personal para reunir aplicaciones en un menú de canales. **Comidas** incluye el planificador semanal, recetas y lista de la compra. **Gimnasio** permite guardar ejercicios reutilizables, crear rutinas e iniciar sesiones con cronómetro para registrar repeticiones y peso serie a serie. Los entrenamientos en curso se conservan en el navegador y las sesiones terminadas se guardan en el historial. **Biblioteca**, para lecturas, puntuaciones y lista de deseos, sigue pendiente.
+Portal personal para reunir aplicaciones en un menú de canales. **Comidas** incluye el planificador semanal, recetas y lista de la compra. **Gimnasio** permite guardar ejercicios reutilizables, crear rutinas e iniciar sesiones con cronómetro para registrar repeticiones y peso serie a serie. Los entrenamientos en curso se conservan en el navegador y las sesiones terminadas se guardan en el historial. **Biblioteca** organiza libros por leer, en curso y terminados, con puntuaciones y seguimiento de páginas.
 
 ## Desarrollo local
 
@@ -22,9 +22,9 @@ Abre [http://localhost:3000](http://localhost:3000). Sin variables de Supabase, 
 5. En **Authentication → URL Configuration**, configura la URL local y, al desplegar, la URL pública de la aplicación.
 6. Reinicia el servidor. El formulario permite crear cuentas e iniciar sesión con correo y contraseña.
 
-Cada cuenta nueva recibe un hogar privado vacío. Desde «Mi hogar» puede generar una invitación temporal para compartir menú, recetas y lista con otras cuentas. Conviene canjear la invitación antes de añadir datos; el código caduca en 7 días. RLS limita las lecturas y escrituras a los miembros del hogar; conocer un UUID de otra fila no concede acceso. El modo demo local sí incluye recetas y ejemplos iniciales.
+Cada cuenta nueva recibe un hogar privado vacío. Desde «Mi hogar» puede generar una invitación temporal para compartir menú, recetas, lista y libros marcados como compartidos con otras cuentas. Conviene canjear la invitación antes de añadir datos; el código caduca en 7 días. RLS limita las lecturas y escrituras a los miembros del hogar; conocer un UUID de otra fila no concede acceso. El modo demo local sí incluye recetas y ejemplos iniciales.
 
-Una cuenta solo puede pertenecer a un hogar a la vez. Para evitar perder datos, el código solo permite cambiar desde un hogar todavía vacío; si esa cuenta ya tiene recetas, comidas o artículos, utiliza una cuenta nueva para aceptar la invitación. Al migrar desde el esquema anterior, las filas con `user_id` se asignan al hogar de esa cuenta. Las filas antiguas sin propietario permanecen inaccesibles y deben asignarse manualmente si necesitas conservarlas.
+Una cuenta solo puede pertenecer a un hogar a la vez. Para evitar perder datos, el código solo permite cambiar desde un hogar todavía vacío; si esa cuenta ya tiene recetas, comidas, artículos o libros compartidos, utiliza una cuenta nueva para aceptar la invitación. Al migrar desde el esquema anterior, las filas de recetas, comidas y compra con `user_id` se asignan al hogar de esa cuenta. Los libros existentes sin `household_id` se conservan como personales; las filas antiguas sin propietario permanecen inaccesibles y deben asignarse manualmente si necesitas conservarlas. La Biblioteca guarda los libros como privados por defecto y permite compartirlos con el hogar; RLS mantiene separados los libros personales de los compartidos. En modo demo, se guardan en el almacenamiento local de ese navegador.
 
 Las variables públicas solo deben contener la URL del proyecto y la clave publicable/anon. Nunca pongas una `service_role` key en el frontend ni en variables `NEXT_PUBLIC_*`.
 

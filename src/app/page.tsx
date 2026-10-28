@@ -47,8 +47,9 @@ const channels: Channel[] = [
   {
     number: '03',
     title: 'Biblioteca',
-    description: 'Libros leídos, puntuaciones y lista de próximas lecturas.',
-    status: 'En preparación',
+    description: 'Organiza lo que lees, guarda tus próximas lecturas y sigue tu progreso.',
+    status: 'Disponible',
+    href: '/biblioteca',
     icon: BookOpen,
     art: 'from-violet-100 via-indigo-50 to-white',
     iconColor: 'bg-violet-500',
