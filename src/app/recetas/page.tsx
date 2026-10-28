@@ -116,17 +116,17 @@ export default function RecetasPage() {
       {/* 1. CABECERA */}
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-[#edf0ed] sm:text-3xl">
             Tus Platos Habituales
           </h1>
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-[#929d97]">
             Guarda tus comidas frecuentes con sus ingredientes para planificar la semana en segundos
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 self-start rounded-2xl bg-neutral-900 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-neutral-800 transition"
+          className="flex items-center gap-2 self-start rounded-2xl bg-[#222b28] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#303a36] transition"
         >
           <Plus className="h-4 w-4" />
           <span>Nuevo Plato</span>
@@ -135,7 +135,7 @@ export default function RecetasPage() {
 
       {/* Notificación flotante de compra */}
       {addedNotice && (
-        <div className="mb-4 flex items-center justify-between rounded-2xl bg-emerald-500 px-4 py-3 text-xs font-bold text-white shadow-md shadow-emerald-500/20 animate-in fade-in">
+        <div className="mb-4 flex items-center justify-between rounded-2xl bg-[#304b39] px-4 py-3 text-xs font-bold text-white shadow-md shadow-emerald-500/20 animate-in fade-in">
           <span>{addedNotice}</span>
           <button onClick={() => setAddedNotice(null)}>
             <X className="h-4 w-4" />
@@ -146,13 +146,13 @@ export default function RecetasPage() {
       {/* 2. BUSCADOR Y FILTROS */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7d8983]" />
           <input
             type="text"
             placeholder="Buscar por nombre de plato o ingrediente..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-2xl border border-neutral-200/80 bg-white py-2.5 pl-10 pr-4 text-xs font-medium text-neutral-900 placeholder:text-neutral-400 shadow-xs focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            className="w-full rounded-2xl border border-[#2b3430]/80 bg-[#141a18] py-2.5 pl-10 pr-4 text-xs font-medium text-[#edf0ed] placeholder:text-[#7d8983] shadow-xs focus:border-[#354a3b] focus:outline-none focus:ring-2 focus:ring-[#54745a]/20"
           />
         </div>
 
@@ -169,8 +169,8 @@ export default function RecetasPage() {
               className={cn(
                 'shrink-0 rounded-2xl px-3.5 py-2 text-xs font-semibold transition',
                 filterCategory === cat.id
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'border border-neutral-200/80 bg-white text-neutral-600 hover:bg-neutral-100'
+                  ? 'bg-[#385440] text-white shadow-xs'
+                  : 'border border-[#2b3430]/80 bg-[#141a18] text-[#aab4ae] hover:bg-[#1a211e]'
               )}
             >
               {cat.label}
@@ -184,26 +184,26 @@ export default function RecetasPage() {
         {filteredRecipes.map((rec) => (
           <div
             key={rec.id}
-            className="flex flex-col justify-between rounded-3xl border border-neutral-200/80 bg-white p-5 shadow-xs transition hover:border-neutral-300 hover:shadow-sm"
+            className="flex flex-col justify-between rounded-3xl border border-[#2b3430]/80 bg-[#141a18] p-5 shadow-xs transition hover:border-[#2b3430] hover:shadow-sm"
           >
             <div>
               {/* Categoría y opciones */}
               <div className="flex items-center justify-between">
-                <span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-[11px] font-bold text-neutral-600 uppercase tracking-wider">
+                <span className="rounded-full bg-[#1a211e] px-2.5 py-0.5 text-[11px] font-bold text-[#aab4ae] uppercase tracking-wider">
                   {rec.category}
                 </span>
 
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => openEditModal(rec)}
-                    className="rounded-xl p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 transition"
+                    className="rounded-xl p-1.5 text-[#7d8983] hover:bg-[#1a211e] hover:text-[#c2cbc5] transition"
                     title="Editar receta"
                   >
                     <Edit3 className="h-3.5 w-3.5" />
                   </button>
                   <button
                     onClick={() => deleteRecipe(rec.id)}
-                    className="rounded-xl p-1.5 text-neutral-400 hover:bg-red-50 hover:text-red-500 transition"
+                    className="rounded-xl p-1.5 text-[#7d8983] hover:bg-[#291e1d] hover:text-[#e0aaa3] transition"
                     title="Eliminar receta"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -212,27 +212,27 @@ export default function RecetasPage() {
               </div>
 
               {/* Título y notas */}
-              <h3 className="mt-3 text-base font-bold text-neutral-900">{rec.name}</h3>
+              <h3 className="mt-3 text-base font-bold text-[#edf0ed]">{rec.name}</h3>
               {rec.notes && (
-                <p className="mt-1 text-xs text-neutral-500 line-clamp-2">{rec.notes}</p>
+                <p className="mt-1 text-xs text-[#929d97] line-clamp-2">{rec.notes}</p>
               )}
 
               {/* Lista de ingredientes */}
-              <div className="mt-4 border-t border-neutral-100 pt-3">
-                <span className="text-[11px] font-bold text-neutral-400">
+              <div className="mt-4 border-t border-[#2b3430] pt-3">
+                <span className="text-[11px] font-bold text-[#7d8983]">
                   Ingredientes ({rec.ingredients.length}):
                 </span>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {rec.ingredients.slice(0, 5).map((ing, idx) => (
                     <span
                       key={idx}
-                      className="rounded-xl bg-neutral-50 px-2.5 py-1 text-[11px] font-medium text-neutral-700 border border-neutral-100"
+                      className="rounded-xl bg-[#1a211e] px-2.5 py-1 text-[11px] font-medium text-[#c2cbc5] border border-[#2b3430]"
                     >
-                      {ing.name} {ing.quantity && <span className="text-neutral-400">({ing.quantity})</span>}
+                      {ing.name} {ing.quantity && <span className="text-[#7d8983]">({ing.quantity})</span>}
                     </span>
                   ))}
                   {rec.ingredients.length > 5 && (
-                    <span className="rounded-xl bg-neutral-50 px-2 py-1 text-[11px] text-neutral-400">
+                    <span className="rounded-xl bg-[#1a211e] px-2 py-1 text-[11px] text-[#7d8983]">
                       +{rec.ingredients.length - 5} más
                     </span>
                   )}
@@ -241,10 +241,10 @@ export default function RecetasPage() {
             </div>
 
             {/* Acción rápida: Añadir ingredientes a la lista de compra */}
-            <div className="mt-5 border-t border-neutral-100 pt-3">
+            <div className="mt-5 border-t border-[#2b3430] pt-3">
               <button
                 onClick={() => handleSendToShopping(rec)}
-                className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-emerald-50 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100 transition"
+                className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-[#19231d] py-2 text-xs font-bold text-[#a8c5ae] hover:bg-[#19231d] transition"
               >
                 <ShoppingCart className="h-3.5 w-3.5" />
                 <span>Añadir ingredientes a la compra</span>
@@ -255,10 +255,10 @@ export default function RecetasPage() {
       </div>
 
       {filteredRecipes.length === 0 && (
-        <div className="rounded-3xl border border-dashed border-neutral-200 bg-white p-12 text-center">
-          <ChefHat className="mx-auto h-8 w-8 text-neutral-300 mb-2" />
-          <p className="text-sm font-semibold text-neutral-600">No se encontraron platos</p>
-          <p className="text-xs text-neutral-400 mt-1">
+        <div className="rounded-3xl border border-dashed border-[#2b3430] bg-[#141a18] p-12 text-center">
+          <ChefHat className="mx-auto h-8 w-8 text-[#68746e] mb-2" />
+          <p className="text-sm font-semibold text-[#aab4ae]">No se encontraron platos</p>
+          <p className="text-xs text-[#7d8983] mt-1">
             Crea uno nuevo con el botón superior para empezar tu biblioteca
           </p>
         </div>
@@ -266,15 +266,15 @@ export default function RecetasPage() {
 
       {/* 4. MODAL CREAR / EDITAR RECETA */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg rounded-3xl border border-neutral-200 bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-              <h3 className="text-base font-bold text-neutral-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#222b28]/40 p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-lg rounded-3xl border border-[#2b3430] bg-[#141a18] p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#2b3430] pb-3">
+              <h3 className="text-base font-bold text-[#edf0ed]">
                 {editingRecipe ? 'Editar Plato' : 'Nuevo Plato Habitual'}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-xl p-1 text-neutral-400 hover:bg-neutral-100"
+                className="rounded-xl p-1 text-[#7d8983] hover:bg-[#1a211e]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -282,23 +282,23 @@ export default function RecetasPage() {
 
             <div className="mt-4 space-y-3.5 max-h-[70vh] overflow-y-auto pr-1">
               <div>
-                <label className="text-xs font-bold text-neutral-700">Nombre del plato:</label>
+                <label className="text-xs font-bold text-[#c2cbc5]">Nombre del plato:</label>
                 <input
                   type="text"
                   placeholder="Ej. Pollo al curry con arroz basmati"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="mt-1 w-full rounded-2xl border border-neutral-200 px-3.5 py-2 text-sm text-neutral-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="mt-1 w-full rounded-2xl border border-[#2b3430] px-3.5 py-2 text-sm text-[#edf0ed] focus:border-[#354a3b] focus:outline-none focus:ring-2 focus:ring-[#54745a]/20"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-neutral-700">Tipo de comida:</label>
+                  <label className="text-xs font-bold text-[#c2cbc5]">Tipo de comida:</label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value as MealType)}
-                    className="mt-1 w-full rounded-2xl border border-neutral-200 px-3 py-2 text-xs font-semibold text-neutral-800 focus:border-emerald-500 focus:outline-none"
+                    className="mt-1 w-full rounded-2xl border border-[#2b3430] px-3 py-2 text-xs font-semibold text-[#d7ded9] focus:border-[#354a3b] focus:outline-none"
                   >
                     <option value="almuerzo">Almuerzo / Comida</option>
                     <option value="cena">Cena</option>
@@ -308,20 +308,20 @@ export default function RecetasPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-neutral-700">Notas / Consejos:</label>
+                  <label className="text-xs font-bold text-[#c2cbc5]">Notas / Consejos:</label>
                   <input
                     type="text"
                     placeholder="Ej. 15 min de cocción"
                     value={formNotes}
                     onChange={(e) => setFormNotes(e.target.value)}
-                    className="mt-1 w-full rounded-2xl border border-neutral-200 px-3.5 py-2 text-xs text-neutral-900 focus:border-emerald-500 focus:outline-none"
+                    className="mt-1 w-full rounded-2xl border border-[#2b3430] px-3.5 py-2 text-xs text-[#edf0ed] focus:border-[#354a3b] focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Ingredientes */}
-              <div className="border-t border-neutral-100 pt-3">
-                <label className="text-xs font-bold text-neutral-700">Ingredientes necesarios:</label>
+              <div className="border-t border-[#2b3430] pt-3">
+                <label className="text-xs font-bold text-[#c2cbc5]">Ingredientes necesarios:</label>
                 
                 <form onSubmit={handleAddIngredientToForm} className="mt-2 flex gap-2">
                   <input
@@ -329,18 +329,18 @@ export default function RecetasPage() {
                     placeholder="Ingrediente (ej. Arroz basmati)"
                     value={newIngName}
                     onChange={(e) => setNewIngName(e.target.value)}
-                    className="flex-1 rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-1.5 text-xs text-neutral-900 focus:border-emerald-500 focus:outline-none"
+                    className="flex-1 rounded-2xl border border-[#2b3430] bg-[#1a211e] px-3 py-1.5 text-xs text-[#edf0ed] focus:border-[#354a3b] focus:outline-none"
                   />
                   <input
                     type="text"
                     placeholder="Cant. (250g)"
                     value={newIngQty}
                     onChange={(e) => setNewIngQty(e.target.value)}
-                    className="w-24 rounded-2xl border border-neutral-200 bg-neutral-50 px-2.5 py-1.5 text-xs text-neutral-900 focus:border-emerald-500 focus:outline-none"
+                    className="w-24 rounded-2xl border border-[#2b3430] bg-[#1a211e] px-2.5 py-1.5 text-xs text-[#edf0ed] focus:border-[#354a3b] focus:outline-none"
                   />
                   <button
                     type="submit"
-                    className="rounded-2xl bg-neutral-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-neutral-800"
+                    className="rounded-2xl bg-[#222b28] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#303a36]"
                   >
                     +
                   </button>
@@ -350,15 +350,15 @@ export default function RecetasPage() {
                   {formIngredients.map((ing, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between rounded-xl bg-neutral-50 px-3 py-1.5 text-xs border border-neutral-100"
+                      className="flex items-center justify-between rounded-xl bg-[#1a211e] px-3 py-1.5 text-xs border border-[#2b3430]"
                     >
-                      <span className="font-semibold text-neutral-800">
-                        {ing.name} {ing.quantity && <span className="text-neutral-400 font-normal">({ing.quantity})</span>}
+                      <span className="font-semibold text-[#d7ded9]">
+                        {ing.name} {ing.quantity && <span className="text-[#7d8983] font-normal">({ing.quantity})</span>}
                       </span>
                       <button
                         type="button"
                         onClick={() => handleRemoveIngredientFromForm(index)}
-                        className="text-neutral-400 hover:text-red-500"
+                        className="text-[#7d8983] hover:text-[#e0aaa3]"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -369,17 +369,17 @@ export default function RecetasPage() {
             </div>
 
             {/* Footer Modal */}
-            <div className="mt-6 flex justify-end gap-2 border-t border-neutral-100 pt-4">
+            <div className="mt-6 flex justify-end gap-2 border-t border-[#2b3430] pt-4">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-2xl px-4 py-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-100"
+                className="rounded-2xl px-4 py-2 text-xs font-semibold text-[#aab4ae] hover:bg-[#1a211e]"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSaveRecipe}
                 disabled={!formName.trim()}
-                className="rounded-2xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-40"
+                className="rounded-2xl bg-[#385440] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#385440] disabled:opacity-40"
               >
                 Guardar Plato
               </button>
